@@ -1,0 +1,303 @@
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I'm Bored — Activity Generator</title>
+<style>
+  :root{
+    --bg:#08090d;
+    --text:#f7f7fb;
+    --muted:#a7a9b5;
+    --line:rgba(255,255,255,.12);
+    --glass:rgba(255,255,255,.07);
+    --glass-strong:rgba(255,255,255,.11);
+    --accent:#8b5cf6;
+    --accent2:#ec4899;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+    background:
+      radial-gradient(circle at 15% 15%,rgba(139,92,246,.25),transparent 32%),
+      radial-gradient(circle at 85% 80%,rgba(236,72,153,.16),transparent 30%),
+      var(--bg);
+    overflow-x:hidden;
+  }
+  .orb{position:fixed;border-radius:50%;filter:blur(70px);pointer-events:none;opacity:.35}
+  .orb.one{width:260px;height:260px;background:#7c3aed;top:-100px;left:-80px}
+  .orb.two{width:240px;height:240px;background:#db2777;right:-80px;bottom:-80px}
+  main{width:min(1100px,92%);margin:auto;padding:34px 0 60px;position:relative}
+  header{text-align:center;margin:20px auto 28px}
+  .eyebrow{
+    display:inline-block;padding:8px 13px;border:1px solid var(--line);
+    border-radius:999px;background:var(--glass);backdrop-filter:blur(18px);
+    color:#d7d1ff;font-size:12px;letter-spacing:.12em;text-transform:uppercase
+  }
+  h1{font-size:clamp(42px,8vw,76px);line-height:.95;margin:18px 0 12px;letter-spacing:-.06em}
+  .subtitle{color:var(--muted);font-size:16px;margin:0 auto;max-width:560px}
+  .app{
+    border:1px solid var(--line);background:rgba(255,255,255,.045);
+    backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+    border-radius:30px;padding:20px;box-shadow:0 30px 90px rgba(0,0,0,.35)
+  }
+  .toolbar{display:flex;gap:10px;overflow:auto;padding-bottom:8px}
+  .filter{
+    flex:0 0 auto;border:1px solid var(--line);background:var(--glass);
+    color:#d6d6df;padding:10px 14px;border-radius:999px;cursor:pointer
+  }
+  .filter.active{background:rgba(139,92,246,.28);border-color:rgba(167,139,250,.55);color:#fff}
+  .card-wrap{display:grid;place-items:center;min-height:430px;padding:22px 5px}
+  .card{
+    width:min(650px,100%);min-height:350px;padding:42px;border-radius:28px;
+    border:1px solid rgba(255,255,255,.16);
+    background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.045));
+    box-shadow:inset 0 1px rgba(255,255,255,.12),0 30px 70px rgba(0,0,0,.28);
+    display:flex;flex-direction:column;justify-content:space-between;
+    transition:transform .25s ease,opacity .25s ease
+  }
+  .card.pop{animation:pop .38s ease}
+  @keyframes pop{0%{transform:scale(.96);opacity:.25}100%{transform:scale(1);opacity:1}}
+  .top{display:flex;justify-content:space-between;gap:12px;align-items:center}
+  .category{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:#c4b5fd}
+  .number{color:#777985;font-size:12px}
+  .emoji{font-size:60px;margin:34px 0 10px}
+  .activity{font-size:clamp(28px,5vw,48px);letter-spacing:-.04em;line-height:1.05;margin:0}
+  .hint{color:var(--muted);margin-top:15px;font-size:15px;line-height:1.5}
+  .actions{display:flex;justify-content:center;padding:4px}
+  .bored{
+    border:0;color:white;font-size:18px;font-weight:750;padding:18px 34px;border-radius:18px;
+    cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 14px 35px rgba(139,92,246,.28);transition:transform .18s,box-shadow .18s
+  }
+  .bored:hover{transform:translateY(-2px);box-shadow:0 18px 45px rgba(139,92,246,.38)}
+  .bored:active{transform:scale(.97)}
+  .count{text-align:center;color:#777985;font-size:12px;margin-top:14px}
+  footer{text-align:center;color:#666873;font-size:12px;margin-top:25px}
+  @media(max-width:600px){
+    main{padding-top:20px}.app{padding:12px;border-radius:24px}.card{padding:28px;min-height:340px}
+    .emoji{font-size:48px}.toolbar{margin-bottom:0}.bored{width:100%}
+  }
+</style>
+</head>
+<body>
+<div class="orb one"></div><div class="orb two"></div>
+<main>
+  <header>
+    <span class="eyebrow">Your anti-boredom machine</span>
+    <h1>I'm Bored.</h1>
+    <p class="subtitle">Don't think about what to do. Just press the button.</p>
+  </header>
+
+  <section class="app">
+    <div class="toolbar" id="filters"></div>
+
+    <div class="card-wrap">
+      <article class="card" id="card">
+        <div class="top">
+          <span class="category" id="category"></span>
+          <span class="number" id="number"></span>
+        </div>
+        <div>
+          <div class="emoji" id="emoji"></div>
+          <h2 class="activity" id="activity"></h2>
+          <p class="hint" id="hint"></p>
+        </div>
+      </article>
+    </div>
+
+    <div class="actions">
+      <button class="bored" id="bored">I'm Bored → Give Me Something</button>
+    </div>
+    <div class="count" id="count"></div>
+  </section>
+
+  <footer>One small action is enough. You don't have to make the whole day productive.</footer>
+</main>
+
+<script>
+const activities = [
+["Learn / Think","🧠","Study AI/ML","Spend 25 minutes learning one ML concept.","learn"],
+["Learn / Think","🐍","Solve Python problems","Solve 3 Python problems without looking at solutions.","learn"],
+["Learn / Think","📚","Read a technical paper","Read the abstract, figures and conclusion of one paper.","learn"],
+["Learn / Think","📖","Read a book","Read 10 pages of a book.","learn"],
+["Learn / Think","🇦🇺","Learn Australian English","Learn 5 Australian expressions or pronunciation patterns.","learn"],
+["Learn / Think","🎯","Practice IELTS","Do one short IELTS speaking, reading or listening exercise.","learn"],
+["Learn / Think","🎬","Watch a documentary","Watch one documentary about science, technology, history or society.","learn"],
+["Learn / Think","♟️","Play chess","Play one chess game or solve 5 puzzles.","learn"],
+["Learn / Think","🔢","Do Sudoku","Solve one Sudoku.","learn"],
+["Learn / Think","✍️","Write down ideas","Write 10 ideas for apps, businesses or inventions.","learn"],
+["Learn / Think","🧩","Solve a hard problem","Pick one problem and work on it for 20 minutes.","learn"],
+["Learn / Think","🔬","Learn something random","Pick a topic you've never studied and learn its basics.","learn"],
+
+["Build / Create","💻","Code","Open your editor and code for 30 minutes.","build"],
+["Build / Create","🤖","Build an AI feature","Add one small AI capability to a project.","build"],
+["Build / Create","📱","Build a mini app","Create a tiny app you can finish today.","build"],
+["Build / Create","🌐","Build a website","Create one polished page for your portfolio or a new idea.","build"],
+["Build / Create","🧪","Experiment with an AI model","Run one model locally and test its capabilities.","build"],
+["Build / Create","⚙️","Make an automation","Automate one repetitive task in your life.","build"],
+["Build / Create","🎨","Create a UI","Design one polished screen in Figma or code.","build"],
+["Build / Create","🛠️","Make a useful tool","Build something that solves one tiny personal problem.","build"],
+["Build / Create","🐙","Contribute to GitHub","Fix a small issue, improve docs or make a useful PR.","build"],
+["Build / Create","🐛","Fix an old bug","Open an old project and eliminate one annoying bug.","build"],
+["Build / Create","🎲","Create something for fun","Build something with no business purpose at all.","build"],
+["Build / Create","🚀","Work on Kodix Labs","Make one concrete improvement to Kodix Labs.","build"],
+
+["Physical","🚶","Walk","Go for a 20–30 minute walk without scrolling.","body"],
+["Physical","🏃","Run","Go for a short run.","body"],
+["Physical","🏋️","Gym","Do a focused gym session.","body"],
+["Physical","🤸","Home workout","Do 15–20 minutes of bodyweight exercises.","body"],
+["Physical","🧘","Stretch","Do a 10-minute full-body stretch.","body"],
+["Physical","🚴","Cycle","Take your bicycle somewhere you've never ridden before.","body"],
+["Physical","⚽","Play football","Find people and play a casual game.","body"],
+["Physical","🏏","Play cricket","Play cricket with friends or a local group.","body"],
+["Physical","🏸","Play badminton","Play a few games of badminton.","body"],
+["Physical","🏊","Swim","Go swimming if you have access to a pool.","body"],
+["Physical","🥾","Hike","Find a nearby trail and hike it.","body"],
+["Physical","☀️","Get sunlight","Spend 15–20 minutes outside in daylight.","body"],
+
+["Explore","☕","Visit a café","Go somewhere you've never tried and sit there for an hour.","explore"],
+["Explore","📚","Visit a library","Spend an hour browsing books or working quietly.","explore"],
+["Explore","🌳","Visit a park","Take a slow walk and sit somewhere peaceful.","explore"],
+["Explore","🏛️","Visit a museum","Explore a museum you've never visited.","explore"],
+["Explore","🎨","Visit an art gallery","Look at art without rushing.","explore"],
+["Explore","🛍️","Explore a market","Walk through a local market and discover something new.","explore"],
+["Explore","📸","Take photos","Go outside and photograph 10 interesting things.","explore"],
+["Explore","🍜","Try local food","Try a food or restaurant you've never tried.","explore"],
+["Explore","🗺️","Explore a new neighborhood","Pick an unfamiliar area and walk around safely.","explore"],
+["Explore","🚆","Take a day trip","Visit a nearby town or attraction.","explore"],
+
+["Social","📞","Call family","Call someone you care about and actually talk.","social"],
+["Social","👋","Call a friend","Call a friend instead of texting.","social"],
+["Social","☕","Meet a friend","Ask someone to meet for coffee.","social"],
+["Social","🤝","Invite someone out","Invite someone for food, coffee or a walk.","social"],
+["Social","🏟️","Join a sports club","Find a recurring sports group.","social"],
+["Social","🎓","Join a meetup","Attend a local technology, hobby or interest meetup.","social"],
+["Social","🧑‍🏫","Attend a workshop","Learn something with other people.","social"],
+["Social","👥","Meet coworkers or classmates","Start a real conversation with someone you normally only greet.","social"],
+["Social","🌱","Make a new friend","Talk to someone new and find one shared interest.","social"],
+["Social","🎮","Play multiplayer games","Play with friends rather than alone.","social"],
+["Social","🍽️","Have dinner with someone","Invite someone to eat together." ,"social"],
+
+["Entertainment","🎬","Watch a movie","Pick a movie you've never seen and actually watch it.","fun"],
+["Entertainment","📺","Watch a TV series","Watch one episode guilt-free.","fun"],
+["Entertainment","▶️","Watch YouTube","Choose something genuinely interesting rather than endless scrolling.","fun"],
+["Entertainment","🎤","Watch stand-up comedy","Watch a full stand-up special.","fun"],
+["Entertainment","🎵","Listen to music","Put your phone away and listen to an album from start to finish.","fun"],
+["Entertainment","🎧","Discover new artists","Find 5 artists you've never heard before.","fun"],
+["Entertainment","🎮","Play a game","Play a game for a defined amount of time.","fun"],
+["Entertainment","🏆","Watch sports","Watch a match or highlights.","fun"],
+["Entertainment","🎙️","Listen to a podcast","Choose one episode around a topic you care about.","fun"],
+["Entertainment","🎤","Watch an interview","Watch a long-form interview with an interesting person.","fun"],
+
+["Creative","📷","Photography","Go outside and create a small photo series.","creative"],
+["Creative","🎞️","Edit a video","Make a 30–60 second video from footage you already have.","creative"],
+["Creative","✏️","Draw","Draw anything for 20 minutes.","creative"],
+["Creative","🖼️","Make digital art","Create one small digital artwork.","creative"],
+["Creative","🎨","Design something","Make a poster, logo, interface or visual experiment.","creative"],
+["Creative","🎹","Make music","Experiment with a beat or melody.","creative"],
+["Creative","🎸","Learn an instrument","Learn one chord, scale or short song.","creative"],
+["Creative","🎤","Sing","Sing along to a few songs.","creative"],
+["Creative","📝","Write","Write a short story, thought, scene or article.","creative"],
+["Creative","🎥","Make a short video","Create something and publish it or keep it for yourself.","creative"],
+["Creative","🧱","Build something physical","Make or repair something with your hands.","creative"],
+
+["Life Skills","🍳","Cook a new meal","Find a recipe and make it yourself.","life"],
+["Life Skills","🧹","Clean your room","Set a 20-minute timer and reset your space.","life"],
+["Life Skills","🗂️","Organize your desk","Remove everything unnecessary and rebuild your workspace.","life"],
+["Life Skills","🧺","Do laundry","Finish your laundry instead of postponing it.","life"],
+["Life Skills","🛒","Go grocery shopping","Plan 3 meals and buy only what you need.","life"],
+["Life Skills","🥗","Meal prep","Prepare food for tomorrow.","life"],
+["Life Skills","💰","Learn budgeting","Review your spending and make a simple monthly budget.","life"],
+["Life Skills","📊","Track expenses","Record everything you spent this week.","life"],
+["Life Skills","🗓️","Plan your week","Write the 3 most important things for the next 7 days.","life"],
+["Life Skills","🏠","Improve your room","Make one small improvement to your living space.","life"],
+["Life Skills","🔧","Learn basic repairs","Learn how to fix one common household problem.","life"],
+["Life Skills","🩹","Learn first aid","Learn one useful first-aid skill." ,"life"],
+
+["Adventure","🌅","Watch sunrise","Wake up early and watch the sunrise somewhere peaceful.","adventure"],
+["Adventure","🌇","Watch sunset","Find a good viewpoint and watch the sunset.","adventure"],
+["Adventure","🎒","Go somewhere spontaneously","Choose a safe destination and go without overplanning.","adventure"],
+["Adventure","🚌","Take public transport somewhere new","Get off at a place you've never explored.","adventure"],
+["Adventure","🏕️","Go camping","Plan a safe overnight camping trip.","adventure"],
+["Adventure","🚗","Take a road trip","Drive somewhere interesting for the day.","adventure"],
+["Adventure","🎪","Attend an event","Find a local event, festival or exhibition.","adventure"],
+["Adventure","🏄","Try a new sport","Try something you've never done before.","adventure"],
+
+["Career","📄","Improve your CV","Make one concrete improvement to your resume.","career"],
+["Career","🐙","Improve GitHub","Clean up a repo, README or project documentation.","career"],
+["Career","💼","Improve your portfolio","Add one strong project or case study.","career"],
+["Career","📨","Apply for a job","Submit one targeted application.","career"],
+["Career","🧑‍💼","Talk to a recruiter","Reach out to one relevant recruiter.","career"],
+["Career","🔎","Research companies","Find 5 companies hiring AI/ML engineers.","career"],
+["Career","🎯","Practice interviews","Answer 5 technical interview questions aloud.","career"],
+["Career","💻","Practice coding interviews","Solve one timed coding problem.","career"],
+["Career","🔗","Improve LinkedIn","Update one section or add a project.","career"],
+["Career","☁️","Learn cloud","Deploy or learn one cloud concept.","career"],
+["Career","🚀","Deploy a project","Put one project online.","career"],
+["Career","⚙️","Learn MLOps","Study and implement one MLOps practice.","career"],
+
+["Recharge","🚿","Take a shower","Reset your body and environment.","recharge"],
+["Recharge","🌿","Take a slow walk","Walk without trying to achieve anything.","recharge"],
+["Recharge","🌳","Sit outside","Sit somewhere quiet and let your brain rest.","recharge"],
+["Recharge","🎵","Listen to music","Listen without multitasking.","recharge"],
+["Recharge","📞","Call someone","Have a relaxed conversation.","recharge"],
+["Recharge","😂","Watch something funny","Give yourself permission to simply enjoy it.","recharge"],
+["Recharge","😴","Take a nap","If you're genuinely tired, sleep.","recharge"],
+["Recharge","🍲","Cook something","Make a simple meal and enjoy the process.","recharge"],
+["Recharge","📵","Put your phone away","Spend 20 minutes without your phone.","recharge"],
+["Recharge","🌙","Go to bed early","Sometimes boredom is actually fatigue.","recharge"]
+];
+
+const categories = ["All", ...new Set(activities.map(a=>a[0]))];
+let current = "All", last = -1;
+
+const filters = document.getElementById("filters");
+const card = document.getElementById("card");
+const categoryEl = document.getElementById("category");
+const numberEl = document.getElementById("number");
+const emojiEl = document.getElementById("emoji");
+const activityEl = document.getElementById("activity");
+const hintEl = document.getElementById("hint");
+const countEl = document.getElementById("count");
+
+categories.forEach(cat=>{
+  const b=document.createElement("button");
+  b.className="filter"+(cat==="All"?" active":"");
+  b.textContent=cat;
+  b.onclick=()=>{current=cat; document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active")); b.classList.add("active"); showRandom();};
+  filters.appendChild(b);
+});
+
+function pool(){
+  return current==="All" ? activities : activities.filter(a=>a[0]===current);
+}
+function showRandom(){
+  const p=pool();
+  if(p.length===0)return;
+  let i=Math.floor(Math.random()*p.length);
+  if(p.length>1 && i===last) i=(i+1)%p.length;
+  last=i;
+  const a=p[i];
+  categoryEl.textContent=a[0];
+  numberEl.textContent=`${i+1} / ${p.length}`;
+  emojiEl.textContent=a[1];
+  activityEl.textContent=a[2];
+  hintEl.textContent=a[3];
+  countEl.textContent=`${activities.length} activities available • ${p.length} in ${current}`;
+  card.classList.remove("pop"); void card.offsetWidth; card.classList.add("pop");
+}
+document.getElementById("bored").onclick=showRandom;
+showRandom();
+</script>
+</body>
+</html>
+'''
+
+path = Path("/mnt/data/im-bored.html")
+path.write_text(html, encoding="utf-8")
+print(f"Created: {path}")
+print(f"Activities: {len([x for x in html.splitlines() if x.startswith('[\"')])}")

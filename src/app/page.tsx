@@ -1,7 +1,5 @@
-export default function Home() {
-  return (
-    <main>
-      <div>Hello world!</div>
-    </main>
-  );
+import { WorldHome } from "@/components/world/WorldHome";
+
+export default function HomePage() {
+  return <WorldHome />;
 }

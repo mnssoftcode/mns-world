@@ -1,1 +1,253 @@
 @import "tailwindcss";
+
+@layer base {
+  :root,
+  html.dark {
+    --bg: #07080c;
+    --surface: #0e1017;
+    --surface-elevated: #151824;
+    --text-primary: #f6f7fb;
+    --text-secondary: #9da3ba;
+    --text-muted: #646a82;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-base: rgba(255, 255, 255, 0.14);
+    --glass-bg: rgba(18, 20, 30, 0.65);
+    --glass-bg-hover: rgba(28, 32, 48, 0.75);
+    --glass-highlight: rgba(255, 255, 255, 0.12);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --accent-glow: rgba(130, 145, 255, 0.18);
+    --accent-primary: #ffffff;
+    --accent-secondary: #a3a8cc;
+    --card-surface: rgba(15, 18, 28, 0.7);
+    --hud-neon: #818cf8;
+    --hud-green: #34d399;
+    --hud-gold: #fbbf24;
+  }
+
+  html.light {
+    --bg: #f2f4f8;
+    --surface: #ffffff;
+    --surface-elevated: #e8ecf4;
+    --text-primary: #0c0e14;
+    --text-secondary: #484e63;
+    --text-muted: #747b94;
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-base: rgba(0, 0, 0, 0.16);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-bg-hover: rgba(255, 255, 255, 0.95);
+    --glass-highlight: rgba(255, 255, 255, 0.98);
+    --glass-border: rgba(0, 0, 0, 0.12);
+    --accent-glow: rgba(0, 0, 0, 0.06);
+    --accent-primary: #0c0e14;
+    --accent-secondary: #3b4055;
+    --card-surface: rgba(255, 255, 255, 0.88);
+    --hud-neon: #4f46e5;
+    --hud-green: #059669;
+    --hud-gold: #d97706;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--bg);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+}
+
+/* Glass Material Utilities */
+.glass-subtle {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--border-subtle);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.glass-base {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+.glass-strong {
+  background: var(--card-surface);
+  backdrop-filter: blur(32px) saturate(160%);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 20px 50px rgba(0, 0, 0, 0.18);
+}
+
+.glass-elevated {
+  background: var(--card-surface);
+  backdrop-filter: blur(40px) saturate(170%);
+  -webkit-backdrop-filter: blur(40px) saturate(170%);
+  border: 1px solid var(--border-base);
+  box-shadow: inset 0 1px 1px var(--glass-highlight), 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* Game HUD Aesthetics */
+.hud-border {
+  position: relative;
+}
+
+.hud-border::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), transparent 40%, rgba(129, 140, 248, 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Subtle Sci-Fi Grid Plane */
+.game-grid-plane {
+  background-image: linear-gradient(var(--border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 80%);
+}
+
+/* Game World Holographic Scanlines */
+.scanline-overlay {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.03),
+    rgba(0, 0, 0, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-base);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Card pop micro-animation for Bored card */
+@keyframes cardPop {
+  0% {
+    transform: scale(0.96) translateY(6px);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-card-pop {
+  animation: cardPop 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Floating XP burst */
+@keyframes floatUpFade {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-28px) scale(1.15);
+  }
+}
+
+.animate-xp-float {
+  animation: floatUpFade 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Orbital rotation for World scene */
+@keyframes orbitalRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-orbital {
+  animation: orbitalRotate 100s linear infinite;
+}
+
+.animate-orbital-reverse {
+  animation: orbitalRotate 140s linear infinite reverse;
+}
+
+/* Subtle breathing glow */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(1.06);
+  }
+}
+
+.animate-glow {
+  animation: pulseGlow 7s ease-in-out infinite;
+}
+
+/* Radar ping for HUD status */
+@keyframes radarPing {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.animate-radar {
+  animation: radarPing 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
