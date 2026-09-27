@@ -18,6 +18,7 @@ import {
   Zap,
   Dice5,
   Gamepad2,
+  MapPin,
 } from "lucide-react";
 
 export function WorldHome() {
@@ -189,6 +190,15 @@ export function WorldHome() {
           >
             <Compass className="w-3.5 h-3.5 text-indigo-400" />
             <span>Career</span>
+          </Link>
+
+          <Link
+            href="/jaipur"
+            onClick={() => gameAudio.playClick(soundEnabled)}
+            className="px-5 py-2.5 rounded-xl glass-base hover:glass-strong text-[var(--text-primary)] font-bold text-xs border border-emerald-500/30 hover:border-emerald-400/50 transition-colors flex items-center gap-2 cursor-pointer"
+          >
+            <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Jaipur 90D</span>
           </Link>
 
           <Link

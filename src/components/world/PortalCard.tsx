@@ -11,6 +11,7 @@ import {
   Target,
   Globe,
   BookOpen,
+  MapPin,
   LucideIcon,
 } from "lucide-react";
 import { useMnsApp } from "@/lib/i18n/context";
@@ -24,6 +25,7 @@ const iconMap: Record<string, LucideIcon> = {
   Target,
   Globe,
   BookOpen,
+  MapPin,
 };
 
 interface PortalCardProps {

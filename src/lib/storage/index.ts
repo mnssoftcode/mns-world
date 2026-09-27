@@ -7,6 +7,7 @@ import {
   LifeHabit,
   CustomExternalLink,
 } from "@/types";
+import { JaipurCustomTask, JaipurContacts } from "@/data/jaipur/mission";
 
 const KEYS = {
   PREFERENCES: "mnsworld:preferences",
@@ -18,6 +19,9 @@ const KEYS = {
   LIFE_GOALS: "mnsworld:life:goals",
   LIFE_HABITS: "mnsworld:life:habits",
   CUSTOM_LINKS: "mnsworld:custom-links",
+  JAIPUR_PROGRESS: "mnsworld:jaipur:progress",
+  JAIPUR_CUSTOM_TASKS: "mnsworld:jaipur:custom-tasks",
+  JAIPUR_CONTACTS: "mnsworld:jaipur:contacts",
 } as const;
 
 export const DEFAULT_PREFERENCES: UserPreferences = {
@@ -34,7 +38,7 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   xp: 120,
   level: 1,
   completedQuests: [],
-  visibleModules: ["career", "life-goals", "enjoy", "web-hub", "library", "settings"],
+  visibleModules: ["career", "jaipur", "life-goals", "enjoy", "web-hub", "library", "settings"],
 };
 
 export const DEFAULT_FOCUS_SETTINGS: FocusSettings = {
@@ -203,6 +207,17 @@ export interface LocalRepository {
   addCustomLink(link: Omit<CustomExternalLink, "id">): CustomExternalLink[];
   deleteCustomLink(id: string): CustomExternalLink[];
 
+  // Jaipur Mission
+  getJaipurProgress(): Record<string, boolean>;
+  toggleJaipurTask(taskId: string): Record<string, boolean>;
+  getJaipurCustomTasks(): JaipurCustomTask[];
+  addJaipurCustomTask(text: string, category: "setup" | "food" | "health" | "budget" | "jaipur" | "weekly" | "custom"): JaipurCustomTask[];
+  toggleJaipurCustomTask(id: string): JaipurCustomTask[];
+  deleteJaipurCustomTask(id: string): JaipurCustomTask[];
+  getJaipurContacts(): JaipurContacts;
+  saveJaipurContacts(contacts: Partial<JaipurContacts>): JaipurContacts;
+  resetJaipurProgress(): void;
+
   clearAllData(): void;
   exportData(): string;
   importData(jsonString: string): boolean;
@@ -346,6 +361,117 @@ class BrowserStorageRepository implements LocalRepository {
       window.dispatchEvent(new Event("mnsworld:career-progress:updated"));
     }
     return updated;
+  }
+
+  // Jaipur Mission
+  getJaipurProgress(): Record<string, boolean> {
+    if (!this.isClient()) return {};
+    try {
+      const data = localStorage.getItem(KEYS.JAIPUR_PROGRESS);
+      if (data) return JSON.parse(data);
+      // Migration fallback from HTML version
+      const legacy = localStorage.getItem("jaipur90day_v1");
+      if (legacy) {
+        const parsed = JSON.parse(legacy);
+        return parsed || {};
+      }
+      return {};
+    } catch {
+      return {};
+    }
+  }
+
+  toggleJaipurTask(taskId: string): Record<string, boolean> {
+    const current = this.getJaipurProgress();
+    const updated = { ...current, [taskId]: !current[taskId] };
+    if (this.isClient()) {
+      localStorage.setItem(KEYS.JAIPUR_PROGRESS, JSON.stringify(updated));
+      window.dispatchEvent(new Event("mnsworld:jaipur:updated"));
+    }
+    return updated;
+  }
+
+  getJaipurCustomTasks(): JaipurCustomTask[] {
+    if (!this.isClient()) return [];
+    try {
+      const data = localStorage.getItem(KEYS.JAIPUR_CUSTOM_TASKS);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  addJaipurCustomTask(text: string, category: "setup" | "food" | "health" | "budget" | "jaipur" | "weekly" | "custom"): JaipurCustomTask[] {
+    const tasks = this.getJaipurCustomTasks();
+    const newTask: JaipurCustomTask = {
+      id: "j-custom-" + Date.now(),
+      text,
+      category,
+      done: false,
+      createdAt: Date.now(),
+    };
+    const updated = [newTask, ...tasks];
+    if (this.isClient()) {
+      localStorage.setItem(KEYS.JAIPUR_CUSTOM_TASKS, JSON.stringify(updated));
+      window.dispatchEvent(new Event("mnsworld:jaipur:updated"));
+    }
+    return updated;
+  }
+
+  toggleJaipurCustomTask(id: string): JaipurCustomTask[] {
+    const tasks = this.getJaipurCustomTasks();
+    const updated = tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
+    if (this.isClient()) {
+      localStorage.setItem(KEYS.JAIPUR_CUSTOM_TASKS, JSON.stringify(updated));
+      window.dispatchEvent(new Event("mnsworld:jaipur:updated"));
+    }
+    return updated;
+  }
+
+  deleteJaipurCustomTask(id: string): JaipurCustomTask[] {
+    const tasks = this.getJaipurCustomTasks();
+    const updated = tasks.filter((t) => t.id !== id);
+    if (this.isClient()) {
+      localStorage.setItem(KEYS.JAIPUR_CUSTOM_TASKS, JSON.stringify(updated));
+      window.dispatchEvent(new Event("mnsworld:jaipur:updated"));
+    }
+    return updated;
+  }
+
+  getJaipurContacts(): JaipurContacts {
+    const defaultContacts: JaipurContacts = {
+      landlord: "",
+      water: "",
+      chemist: "",
+      gym: "",
+      wifi: "",
+      rent: "",
+    };
+    if (!this.isClient()) return defaultContacts;
+    try {
+      const data = localStorage.getItem(KEYS.JAIPUR_CONTACTS);
+      return data ? { ...defaultContacts, ...JSON.parse(data) } : defaultContacts;
+    } catch {
+      return defaultContacts;
+    }
+  }
+
+  saveJaipurContacts(contacts: Partial<JaipurContacts>): JaipurContacts {
+    const current = this.getJaipurContacts();
+    const updated: JaipurContacts = { ...current, ...contacts };
+    if (this.isClient()) {
+      localStorage.setItem(KEYS.JAIPUR_CONTACTS, JSON.stringify(updated));
+      window.dispatchEvent(new Event("mnsworld:jaipur:updated"));
+    }
+    return updated;
+  }
+
+  resetJaipurProgress(): void {
+    if (this.isClient()) {
+      localStorage.removeItem(KEYS.JAIPUR_PROGRESS);
+      localStorage.removeItem(KEYS.JAIPUR_CUSTOM_TASKS);
+      window.dispatchEvent(new Event("mnsworld:jaipur:updated"));
+    }
   }
 
   // Productivity

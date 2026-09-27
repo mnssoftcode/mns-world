@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jaipur 90-Day Mission — Study & Living Journey</title>
+<style>
+  :root{
+    --bg:#0b0b0f;
+    --panel:#141419;
+    --panel2:#1a1a21;
+    --text:#f5f5f7;
+    --muted:#9a9aa6;
+    --line:#292932;
+    --accent:#7c5cff;
+    --accent2:#a98fff;
+    --accent-glow:rgba(124,92,255,.25);
+    --good:#43d17a;
+    --good-glow:rgba(67,209,122,.2);
+    --warn:#ffb84d;
+    --danger:#ff6575;
+    --shadow:0 18px 50px rgba(0,0,0,.28);
+    --radius:20px;
+    --radius-sm:12px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(124,92,255,.16), transparent 30%),
+      radial-gradient(circle at 90% 15%, rgba(169,143,255,.1), transparent 28%),
+      radial-gradient(circle at 50% 50%, rgba(67,209,122,.04), transparent 45%),
+      var(--bg);
+    min-height:100vh;
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 18px 60px}
+  .hero{
+    display:grid;
+    grid-template-columns:1.5fr .9fr;
+    gap:18px;
+    margin-bottom:20px;
+  }
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,.038), rgba(255,255,255,.015));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(16px);
+  }
+  .heroMain{padding:30px;display:flex;flex-direction:column;justify-content:center}
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--accent2);
+    margin-bottom:12px;
+  }
+  .eyebrow-badge{
+    background:rgba(124,92,255,.18);
+    border:1px solid rgba(169,143,255,.3);
+    padding:3px 8px;
+    border-radius:6px;
+    font-size:11px;
+  }
+  h1{font-size:clamp(32px,4.5vw,54px);line-height:1.05;margin:0 0 12px;letter-spacing:-.045em}
+  .heroMain p{margin:0;color:var(--muted);font-size:15px;max-width:720px;line-height:1.65}
+  
+  .statCard{padding:24px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+  .progressRing{
+    width:126px;height:126px;border-radius:50%;
+    margin:0 auto 14px;
+    display:grid;place-items:center;
+    background:conic-gradient(var(--accent) 0deg, #2a2a33 0deg);
+    position:relative;
+    box-shadow:0 0 25px var(--accent-glow);
+    transition:background .35s ease;
+  }
+  .progressRing:before{
+    content:"";position:absolute;inset:10px;border-radius:50%;
+    background:var(--panel);
+  }
+  .progressRing span{position:relative;font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .statLabel{text-align:center;color:var(--muted);font-size:13px;margin-bottom:12px}
+  
+  .subStats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    width:100%;
+    margin-top:4px;
+  }
+  .subStatBox{
+    background:rgba(255,255,255,.025);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:8px 10px;
+    text-align:center;
+    cursor:pointer;
+    transition:.2s;
+  }
+  .subStatBox:hover{
+    border-color:var(--accent);
+    background:rgba(124,92,255,.06);
+  }
+  .subStatTitle{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:2px}
+  .subStatVal{font-size:13px;font-weight:800;color:var(--text)}
+
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    flex-wrap:wrap;margin-bottom:16px
+  }
+  .tabs{display:flex;gap:8px;flex-wrap:wrap}
+  .topActions{display:flex;gap:8px;align-items:center}
+  button{
+    border:1px solid var(--line);background:var(--panel2);color:var(--text);
+    padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;
+    transition:.2s ease;font-size:13px;display:inline-flex;align-items:center;gap:6px;
+  }
+  button:hover{transform:translateY(-1px);border-color:#434350}
+  .tab.active{background:var(--accent);border-color:var(--accent);box-shadow:0 0 16px var(--accent-glow)}
+  .tab-living{position:relative}
+  .tab-living.active{background:linear-gradient(135deg,#7c5cff,#43d17a);border-color:#43d17a}
+  .badge-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block;
+  }
+  .ghost{background:transparent}
+  .ghost:hover{background:rgba(255,255,255,.04)}
+  .danger{color:#ff9aa4}
+  .danger:hover{border-color:var(--danger);background:rgba(255,101,117,.1)}
+
+  .daily{
+    padding:20px;margin-bottom:18px
+  }
+  .sectionTitle{
+    display:flex;justify-content:space-between;align-items:end;gap:10px;
+    margin-bottom:14px;flex-wrap:wrap;
+  }
+  .sectionTitle h2{margin:0;font-size:22px;letter-spacing:-.02em}
+  .sectionTitle p{margin:0;color:var(--muted);font-size:13px}
+  .routine{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:9px
+  }
+  .routineItem{
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+    padding:11px 14px;border-radius:14px;background:rgba(255,255,255,.025);
+    border:1px solid var(--line);
+    transition:.15s;
+  }
+  .routineItem:hover{background:rgba(255,255,255,.04);border-color:#3a3a46}
+  .routineTime{font-weight:800;font-size:13px;white-space:nowrap;color:#e1e1e8}
+  .routineTask{color:#d5d5dc;font-size:13px;text-align:right}
+  .routineCategory{
+    display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;
+    background:rgba(124,92,255,.15);color:var(--accent2);margin-right:6px;font-weight:600;
+  }
+
+  .monthView{padding:22px}
+  .monthHeader{
+    display:flex;justify-content:space-between;align-items:center;gap:16px;
+    margin-bottom:18px;flex-wrap:wrap
+  }
+  .monthHeader h2{margin:0;font-size:26px;letter-spacing:-.025em}
+  .monthHeader p{margin:4px 0 0;color:var(--muted);font-size:14px}
+  .monthStats{display:flex;gap:10px;align-items:center}
+  .pill{
+    padding:8px 12px;border-radius:999px;background:rgba(124,92,255,.12);
+    color:var(--accent2);font-size:12px;font-weight:800;border:1px solid rgba(169,143,255,.2);
+  }
+  .pill-good{background:rgba(67,209,122,.12);color:var(--good);border-color:rgba(67,209,122,.2)}
+  .bar{
+    width:160px;height:8px;background:#292932;border-radius:99px;overflow:hidden
+  }
+  .bar > div{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:.25s}
+  .bar.good > div{background:linear-gradient(90deg,#43d17a,#7c5cff)}
+
+  .filterBar{
+    display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center;
+  }
+  .filterBtn{
+    padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;
+    background:rgba(255,255,255,.03);border:1px solid var(--line);
+  }
+  .filterBtn.active{background:rgba(124,92,255,.2);border-color:var(--accent2);color:#fff}
+
+  .weeks{display:grid;gap:14px}
+  .week{
+    border:1px solid var(--line);background:rgba(255,255,255,.018);
+    border-radius:16px;overflow:hidden;transition:.2s;
+  }
+  .week:hover{border-color:#383844}
+  .weekHead{
+    padding:15px 18px;display:flex;justify-content:space-between;align-items:center;
+    gap:10px;cursor:pointer;user-select:none;
+  }
+  .weekHead h3{margin:0;font-size:16px;display:flex;align-items:center;gap:8px}
+  .weekHead p{margin:3px 0 0;color:var(--muted);font-size:12px}
+  .weekBody{padding:0 18px 16px}
+  .weekBody.hidden{display:none}
+  
+  .task{
+    display:flex;align-items:flex-start;gap:12px;
+    padding:11px 0;border-top:1px solid rgba(255,255,255,.05);
+    transition:.15s;
+  }
+  .task:hover{background:rgba(255,255,255,.01)}
+  .task input{margin-top:3px;width:17px;height:17px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+  .task label{cursor:pointer;line-height:1.5;font-size:14px;color:#dddde3;flex:1}
+  .task.done label{text-decoration:line-through;color:#73737e}
+  
+  .taskTag{
+    display:inline-block;
+    padding:2px 7px;
+    border-radius:6px;
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    margin-right:6px;
+    letter-spacing:.04em;
+    vertical-align:middle;
+  }
+  .tag-setup{background:rgba(56,189,248,.14);color:#38bdf8;border:1px solid rgba(56,189,248,.25)}
+  .tag-food{background:rgba(52,211,153,.14);color:#34d399;border:1px solid rgba(52,211,153,.25)}
+  .tag-health{background:rgba(251,146,60,.14);color:#fb923c;border:1px solid rgba(251,146,60,.25)}
+  .tag-budget{background:rgba(250,204,21,.14);color:#facc15;border:1px solid rgba(250,204,21,.25)}
+  .tag-jaipur{background:rgba(244,114,182,.14);color:#f472b6;border:1px solid rgba(244,114,182,.25)}
+  .tag-weekly{background:rgba(168,85,247,.14);color:#c084fc;border:1px solid rgba(168,85,247,.25)}
+  .tag-custom{background:rgba(255,255,255,.1);color:#eee;border:1px solid rgba(255,255,255,.2)}
+  .tag-study{background:rgba(124,92,255,.14);color:#a98fff;border:1px solid rgba(124,92,255,.25)}
+
+  .deleteBtn{
+    background:transparent;border:none;color:#ff6575;cursor:pointer;padding:2px 6px;
+    font-size:13px;opacity:0.6;transition:.15s;border-radius:6px;
+  }
+  .deleteBtn:hover{opacity:1;background:rgba(255,101,117,.1)}
+
+  /* Custom task creation box */
+  .addTaskBox{
+    margin-top:18px;
+    padding:16px;
+    background:rgba(255,255,255,.025);
+    border:1px dashed var(--line);
+    border-radius:14px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .addTaskBox input[type="text"]{
+    flex:1;
+    min-width:200px;
+    background:var(--panel2);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:13px;
+    outline:none;
+  }
+  .addTaskBox input[type="text"]:focus{border-color:var(--accent)}
+  .addTaskBox select{
+    background:var(--panel2);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:10px 12px;
+    border-radius:10px;
+    font-size:13px;
+    outline:none;
+  }
+
+  /* Living Contacts Quick Reference */
+  .contactsGrid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:12px;
+    margin-top:16px;
+  }
+  .contactItem{
+    background:rgba(255,255,255,.025);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .contactLabel{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase}
+  .contactInput{
+    background:transparent;
+    border:none;
+    border-bottom:1px solid transparent;
+    color:var(--text);
+    font-size:13px;
+    font-weight:600;
+    padding:2px 0;
+    outline:none;
+    transition:.15s;
+  }
+  .contactInput:focus{border-bottom-color:var(--accent)}
+
+  .bottomGrid{
+    display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px
+  }
+  .mini{padding:20px}
+  .mini h3{margin:0 0 8px;font-size:16px;display:flex;align-items:center;gap:6px}
+  .mini p{color:var(--muted);font-size:13px;line-height:1.6}
+  .rules{margin:0;padding-left:18px;color:#d1d1d8;font-size:13px;line-height:1.8}
+
+  .toast{
+    position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);
+    background:#202028;color:#fff;border:1px solid var(--line);
+    padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;
+    transition:.25s;z-index:99;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.5);
+    font-weight:600;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr}
+    .routine{grid-template-columns:1fr}
+    .bottomGrid{grid-template-columns:1fr}
+    .monthStats{width:100%;justify-content:space-between}
+    .bar{flex:1}
+  }
+  @media(max-width:540px){
+    .wrap{padding:16px 12px 40px}
+    .heroMain,.statCard,.daily,.monthView,.mini{padding:16px}
+    .routineItem{align-items:flex-start;flex-direction:column;gap:4px}
+    .routineTask{text-align:left}
+    .monthHeader h2{font-size:22px}
+    .topbar{flex-direction:column;align-items:stretch}
+    .tabs{justify-content:center}
+    .topActions{justify-content:center}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="card heroMain">
+      <div class="eyebrow">
+        <span>Jaipur • 90 Day Mission</span>
+        <span class="eyebrow-badge">Study + Independent Living</span>
+      </div>
+      <h1>Build the next version of you.</h1>
+      <p>
+        IELTS + AI/ML + interview readiness + a stronger body + independent living in Jaipur.
+        Keep the routine fixed, master your cooking and life system, check off the work, and let the 90 days compound.
+      </p>
+    </div>
+    <div class="card statCard">
+      <div class="progressRing" id="ring"><span id="overallPct">0%</span></div>
+      <div class="statLabel" id="overallText">0 / 0 tasks completed</div>
+      <div class="subStats">
+        <div class="subStatBox" id="statBoxStudy" title="Click to view Curriculum">
+          <div class="subStatTitle">📚 Study Curriculum</div>
+          <div class="subStatVal" id="studySubVal">0/0 (0%)</div>
+        </div>
+        <div class="subStatBox" id="statBoxLiving" title="Click to view Living Module">
+          <div class="subStatTitle">🏠 Living & Prep</div>
+          <div class="subStatVal" id="livingSubVal">0/0 (0%)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card daily">
+    <div class="sectionTitle">
+      <div>
+        <h2>Daily Routine — The 90-Day Discipline</h2>
+        <p>Your time structure stays rock solid across all 3 months. Balance deep tech focus with independent life.</p>
+      </div>
+      <div style="font-size:12px;color:var(--accent2);font-weight:700">
+        14h Productive / Living • 7h Sleep • 3h Enjoyment
+      </div>
+    </div>
+    <div class="routine">
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">SLEEP</span>10:00 PM – 5:00 AM</span>
+        <span class="routineTask">Deep Sleep • 7h (Phone away at 9:30 PM)</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">HEALTH</span>5:00 – 5:20 AM</span>
+        <span class="routineTask">Wake up, 500ml water, freshen up</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">GYM</span>5:20 – 6:20 AM</span>
+        <span class="routineTask">Serious exercise / gym workout • 1h</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">LIVING</span>6:20 – 7:50 AM</span>
+        <span class="routineTask">Cooking + high-protein breakfast + lunch prep • 1.5h</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">LIVING</span>7:50 – 8:20 AM</span>
+        <span class="routineTask">Shower + get ready + clean room reset</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">TECH</span>8:20 – 11:20 AM</span>
+        <span class="routineTask">AI/ML Deep Work • 3h</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">REST</span>11:20 – 11:50 AM</span>
+        <span class="routineTask">Break + hydrate + stretch</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">IELTS</span>11:50 AM – 1:50 PM</span>
+        <span class="routineTask">IELTS Preparation • 2h</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">LIVING</span>1:50 – 2:35 PM</span>
+        <span class="routineTask">Healthy lunch + rest / quick power nap</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">INTERVIEW</span>2:35 – 4:35 PM</span>
+        <span class="routineTask">AI/ML Interview Preparation • 2h</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">FREE</span>4:35 – 5:00 PM</span>
+        <span class="routineTask">Personal / free time & unwind</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">JAIPUR</span>5:00 – 5:30 PM</span>
+        <span class="routineTask">Outside walk / Jaipur fresh air / social</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">FREE</span>5:30 – 6:00 PM</span>
+        <span class="routineTask">Call family & friends / tea break</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">LIVING</span>6:00 – 7:30 PM</span>
+        <span class="routineTask">Cooking + dinner + English speaking practice</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">RELAX</span>7:30 – 9:30 PM</span>
+        <span class="routineTask">Enjoyment / explore Jaipur / friends / gaming</span>
+      </div>
+      <div class="routineItem">
+        <span class="routineTime"><span class="routineCategory">HABIT</span>9:30 – 10:00 PM</span>
+        <span class="routineTask">Reading a good book (no blue light)</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="topbar">
+    <div class="tabs" id="tabs"></div>
+    <div class="topActions">
+      <button class="ghost" id="exportBtn" title="Export progress to JSON">Export Data</button>
+      <button class="ghost danger" id="resetBtn">Reset All</button>
+    </div>
+  </div>
+
+  <section class="card monthView">
+    <div class="monthHeader">
+      <div>
+        <h2 id="monthTitle"></h2>
+        <p id="monthSubtitle"></p>
+      </div>
+      <div class="monthStats">
+        <span class="pill" id="monthPct">0%</span>
+        <div class="bar" id="monthBarWrap"><div id="monthBar"></div></div>
+      </div>
+    </div>
+
+    <!-- Quick filter bar for Living module -->
+    <div class="filterBar" id="filterBar" style="display:none">
+      <span style="font-size:12px;color:var(--muted);font-weight:700">Filter:</span>
+      <button class="filterBtn active" data-filter="all">All Items</button>
+      <button class="filterBtn" data-filter="setup">Setup & Relocation</button>
+      <button class="filterBtn" data-filter="food">Cooking & Food</button>
+      <button class="filterBtn" data-filter="health">Gym & Health</button>
+      <button class="filterBtn" data-filter="budget">Budget & Bills</button>
+      <button class="filterBtn" data-filter="jaipur">Jaipur Life</button>
+      <button class="filterBtn" data-filter="weekly">Weekly Routine</button>
+    </div>
+
+    <div class="weeks" id="weeks"></div>
+
+    <!-- Living Module Specific: Add Custom Task & Emergency Contacts -->
+    <div id="livingExtras" style="display:none">
+      <div class="addTaskBox">
+        <input type="text" id="customTaskInput" placeholder="Add custom personal task (e.g., Buy induction, pay laundry, explore Nahargarh)..." />
+        <select id="customTaskCategory">
+          <option value="setup">Setup / Room</option>
+          <option value="food">Cooking / Grocery</option>
+          <option value="health">Gym / Fitness</option>
+          <option value="budget">Budget / Finance</option>
+          <option value="jaipur">Jaipur Life</option>
+          <option value="weekly">Weekly Habit</option>
+        </select>
+        <button id="addCustomTaskBtn" style="background:var(--accent);border-color:var(--accent)">+ Add Task</button>
+      </div>
+
+      <div style="margin-top:24px">
+        <h3 style="margin:0 0 6px;font-size:16px">📍 Jaipur Quick Contacts & Room Info</h3>
+        <p style="margin:0;color:var(--muted);font-size:13px">Keep crucial landlord, water jar, chemist, and local numbers handy right here. (Auto-saved)</p>
+        <div class="contactsGrid">
+          <div class="contactItem">
+            <span class="contactLabel">Landlord / Caretaker</span>
+            <input class="contactInput" id="contact_landlord" placeholder="Name & Phone number" />
+          </div>
+          <div class="contactItem">
+            <span class="contactLabel">20L RO Water Jar Supplier</span>
+            <input class="contactInput" id="contact_water" placeholder="Delivery contact & price" />
+          </div>
+          <div class="contactItem">
+            <span class="contactLabel">Nearest 24/7 Chemist / Clinic</span>
+            <input class="contactInput" id="contact_chemist" placeholder="Medical store / doctor" />
+          </div>
+          <div class="contactItem">
+            <span class="contactLabel">Gym Trainer / Front Desk</span>
+            <input class="contactInput" id="contact_gym" placeholder="Gym name & number" />
+          </div>
+          <div class="contactItem">
+            <span class="contactLabel">Wi-Fi Provider / Technician</span>
+            <input class="contactInput" id="contact_wifi" placeholder="Broadband ID & contact" />
+          </div>
+          <div class="contactItem">
+            <span class="contactLabel">Monthly Room Rent & Due Date</span>
+            <input class="contactInput" id="contact_rent" placeholder="₹ Amount & Day of month" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottomGrid">
+    <div class="card mini">
+      <h3>⚡ 90-Day Unbreakable Rules</h3>
+      <ul class="rules">
+        <li>Don't start random projects — focus on depth and proof.</li>
+        <li>Learn → Code → Solve → Explain out loud in English.</li>
+        <li>Keep the 5:20 AM morning workout non-negotiable.</li>
+        <li>Strict boundary: No heavy studying after 7:30 PM dinner.</li>
+        <li>Use evenings to walk, breathe, and live in Jaipur.</li>
+        <li>Sleep 7 hours every night: sleep is your competitive edge.</li>
+        <li>Eat high protein and cook clean meals — energy drives focus.</li>
+      </ul>
+    </div>
+    <div class="card mini">
+      <h3>🎯 How This System Works</h3>
+      <p>
+        This dashboard keeps your study roadmap and 3-month living preparation unified.
+        Tick off checklist items as you move through your days.
+        Your progress is saved automatically in your browser's local storage.
+        Use the <strong>Living & Prep</strong> tab to manage your relocation, kitchen setup, weekly cleaning, gym habit, and budget.
+      </p>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast">Saved</div>
+
+<script>
+// Study Curriculum Plan (Months 1 to 3)
+const studyPlan = [
+  {
+    id:"m1",
+    title:"Month 1 — Build the Foundation",
+    subtitle:"Create the system, establish IELTS level, and strengthen AI/ML fundamentals.",
+    weeks:[
+      {
+        title:"Week 1",
+        subtitle:"Python deeply + diagnostic + daily routine lock-in",
+        tasks:[
+          { tag:"tech", text:"AI/ML: Python deeply — functions, classes, modules, exceptions, file handling." },
+          { tag:"tech", text:"AI/ML: OOP fundamentals and Git/GitHub basics." },
+          { tag:"ielts", text:"IELTS: Take a diagnostic/level test and identify weak modules." },
+          { tag:"ielts", text:"IELTS: Start Listening and Speaking practice." },
+          { tag:"interview", text:"Interview: Python/OOP questions; answer technical questions out loud." },
+          { tag:"health", text:"Body: Complete the planned morning workout consistently." },
+          { tag:"living", text:"Life: Learn your basic Jaipur grocery/cooking/room routine." }
+        ]
+      },
+      {
+        title:"Week 2",
+        subtitle:"Data foundations + IELTS basics",
+        tasks:[
+          { tag:"tech", text:"AI/ML: NumPy fundamentals and hands-on exercises." },
+          { tag:"tech", text:"AI/ML: Pandas, data cleaning, preprocessing, and visualization." },
+          { tag:"ielts", text:"IELTS: Reading fundamentals + Listening practice." },
+          { tag:"ielts", text:"IELTS: Vocabulary and grammar habit." },
+          { tag:"interview", text:"Interview: Python coding + SQL basics." },
+          { tag:"health", text:"Body: Track workout consistency and body weight." },
+          { tag:"jaipur", text:"Life: Explore one new place in Jaipur." }
+        ]
+      },
+      {
+        title:"Week 3",
+        subtitle:"Statistics + communication",
+        tasks:[
+          { tag:"tech", text:"AI/ML: Statistics — mean, variance, distributions, correlation." },
+          { tag:"tech", text:"AI/ML: Probability fundamentals and practical data interpretation." },
+          { tag:"ielts", text:"IELTS: Writing + Speaking practice." },
+          { tag:"ielts", text:"IELTS: Continue Listening/Reading under light time pressure." },
+          { tag:"interview", text:"Interview: Statistics questions + explain concepts in simple English." },
+          { tag:"health", text:"Body: Keep progressive training and adequate food/recovery." },
+          { tag:"jaipur", text:"Life: Spend an evening outside without turning it into study time." }
+        ]
+      },
+      {
+        title:"Week 4",
+        subtitle:"Classical ML",
+        tasks:[
+          { tag:"tech", text:"AI/ML: Regression and classification." },
+          { tag:"tech", text:"AI/ML: Decision trees, Random Forests, train/validation/test." },
+          { tag:"tech", text:"AI/ML: Cross-validation and model evaluation metrics." },
+          { tag:"ielts", text:"IELTS: Mixed timed practice and review weak areas." },
+          { tag:"interview", text:"Interview: ML fundamentals + project explanation practice." },
+          { tag:"health", text:"Body: Review training consistency and adjust only what is necessary." },
+          { tag:"jaipur", text:"Life: Establish a few favorite Jaipur places/routes." }
+        ]
+      }
+    ]
+  },
+  {
+    id:"m2",
+    title:"Month 2 — Build Real AI/ML Ability",
+    subtitle:"Move from fundamentals into deep learning, modern AI, and stronger interview evidence.",
+    weeks:[
+      {
+        title:"Week 5",
+        subtitle:"Neural networks",
+        tasks:[
+          { tag:"tech", text:"AI/ML: Neural networks, forward propagation, loss, backpropagation." },
+          { tag:"tech", text:"AI/ML: Optimizers and training fundamentals." },
+          { tag:"ielts", text:"IELTS: Regular timed Listening and Reading practice." },
+          { tag:"ielts", text:"IELTS: Multiple Writing/Speaking tasks with correction." },
+          { tag:"interview", text:"Interview: ML theory + Python coding." },
+          { tag:"health", text:"Body: Keep the 1-hour morning training schedule." }
+        ]
+      },
+      {
+        title:"Week 6",
+        subtitle:"PyTorch",
+        tasks:[
+          { tag:"tech", text:"AI/ML: PyTorch datasets, models, training loops, evaluation." },
+          { tag:"tech", text:"AI/ML: GPU/MPS basics and practical experimentation." },
+          { tag:"ielts", text:"IELTS: Increase timed practice and speaking simulations." },
+          { tag:"interview", text:"Interview: Deep learning fundamentals + coding." },
+          { tag:"tech", text:"Portfolio: Start improving one flagship project's technical presentation." }
+        ]
+      },
+      {
+        title:"Week 7",
+        subtitle:"Computer vision",
+        tasks:[
+          { tag:"tech", text:"AI/ML: CNN fundamentals." },
+          { tag:"tech", text:"AI/ML: Transfer learning and computer vision workflows." },
+          { tag:"ielts", text:"IELTS: Continue timed modules + writing/speaking correction." },
+          { tag:"interview", text:"Interview: CNN/deep learning questions." },
+          { tag:"tech", text:"Portfolio: Strengthen the Plant Health Detector / CV evidence." },
+          { tag:"jaipur", text:"Life: Plan at least one enjoyable solo outing." }
+        ]
+      },
+      {
+        title:"Week 8",
+        subtitle:"Modern AI",
+        tasks:[
+          { tag:"tech", text:"AI/ML: Embeddings and Transformers." },
+          { tag:"tech", text:"AI/ML: LLM fundamentals, RAG, vector databases, AI APIs." },
+          { tag:"ielts", text:"IELTS: Begin regular partial/full mock tests." },
+          { tag:"interview", text:"Interview: AI/LLM concepts + project deep-dives." },
+          { tag:"tech", text:"Portfolio: Define the evidence and deployment story for the serious ML/GenAI project if needed." },
+          { tag:"health", text:"Body: Keep nutrition and training consistent." }
+        ]
+      }
+    ]
+  },
+  {
+    id:"m3",
+    title:"Month 3 — Interview + Career Mode",
+    subtitle:"Turn what you know into proof, interview performance, and job readiness.",
+    weeks:[
+      {
+        title:"Week 9",
+        subtitle:"Production ML",
+        tasks:[
+          { tag:"tech", text:"AI/ML: FastAPI, model serving, Docker." },
+          { tag:"tech", text:"AI/ML: ML pipelines, logging, monitoring." },
+          { tag:"ielts", text:"IELTS: Full/partial timed mocks." },
+          { tag:"interview", text:"Interview: Python + ML + SQL technical questions." },
+          { tag:"tech", text:"Portfolio: Improve architecture, metrics, deployment, and README for flagship projects." }
+        ]
+      },
+      {
+        title:"Week 10",
+        subtitle:"Deployment + edge AI",
+        tasks:[
+          { tag:"tech", text:"AI/ML: CI/CD and cloud basics." },
+          { tag:"tech", text:"AI/ML: ONNX and TensorFlow Lite." },
+          { tag:"ielts", text:"IELTS: Speaking simulations + timed Writing/Reading." },
+          { tag:"interview", text:"Interview: Deep learning + AI/LLM + project questions." },
+          { tag:"tech", text:"React Native: Review performance, architecture, TypeScript, native modules, debugging." }
+        ]
+      },
+      {
+        title:"Week 11",
+        subtitle:"Interview simulation",
+        tasks:[
+          { tag:"interview", text:"AI/ML: Explain your projects as if an interviewer is in front of you." },
+          { tag:"interview", text:"Interview: Coding simulation." },
+          { tag:"interview", text:"Interview: ML theory simulation." },
+          { tag:"interview", text:"Interview: Project deep-dive simulation." },
+          { tag:"interview", text:"Interview: Behavioral/communication practice." },
+          { tag:"ielts", text:"IELTS: Full/partial mock + target weak module." }
+        ]
+      },
+      {
+        title:"Week 12",
+        subtitle:"Career readiness",
+        tasks:[
+          { tag:"career", text:"Career: Prepare AI/ML Engineer resume." },
+          { tag:"career", text:"Career: Prepare AI Software Engineer / Applied AI resume." },
+          { tag:"career", text:"Career: Keep React Native resume ready as the bridge/backup profile." },
+          { tag:"career", text:"Career: Clean GitHub and pin strongest repositories." },
+          { tag:"career", text:"Career: Polish LinkedIn, portfolio, and project case studies." },
+          { tag:"ielts", text:"IELTS: Final readiness assessment and exam decision." },
+          { tag:"interview", text:"Interview: Run several complete mock interview sessions." },
+          { tag:"living", text:"Life: Review the 90 days — skills, body, independence, and life experience." }
+        ]
+      }
+    ]
+  }
+];
+
+// 3-Month Living & Relocation Journey Plan
+const livingPlan = {
+  id:"living",
+  title:"3-Month Jaipur Living & Journey Preparation",
+  subtitle:"Master your independent living system: relocation setup, cooking, gym, budget, Jaipur life & transition.",
+  isLiving:true,
+  weeks:[
+    {
+      title:"Phase 0 — Pre-Arrival & Departure Prep",
+      subtitle:"Travel booking, luggage packing, essential documents, and budget allocation",
+      tasks:[
+        { tag:"setup", text:"Documents: Carry physical Aadhaar, PAN, marksheets, degree certificates & 10+ passport photos." },
+        { tag:"setup", text:"Digital: Save encrypted cloud backups of all identity docs, passport, and CV to Google Drive/DigiLocker." },
+        { tag:"setup", text:"Gear & Electronics: Pack laptop, charger, surge protector extension spike, mouse, cables & power bank." },
+        { tag:"setup", text:"Clothing: Pack 4-5 gym workout outfits, casual wear, comfortable walking shoes & towels." },
+        { tag:"budget", text:"Finance: Allocate ₹20,000–₹30,000 setup liquidity for deposit, advance rent, utensils & initial groceries." },
+        { tag:"setup", text:"Mobility: Download offline Google Maps of Jaipur and install Rapido, Uber, Ola, Zomato, Swiggy, Blinkit/Zepto." }
+      ]
+    },
+    {
+      title:"Phase 1 — Jaipur Room & Workstation Setup",
+      subtitle:"Inspect room, finalize rent agreement, install Wi-Fi, and build deep work desk",
+      tasks:[
+        { tag:"setup", text:"Room Inspection: Visit 2-3 shortlisted rooms (check sunlight, natural ventilation, quietness, mobile 5G network)." },
+        { tag:"setup", text:"Agreement: Finalize rent terms, clear security deposit conditions & note electricity sub-meter initial reading." },
+        { tag:"setup", text:"Internet: Install high-speed fiber Wi-Fi (50–100 Mbps) & confirm phone 5G hotspot works as fallback." },
+        { tag:"setup", text:"Deep Work Desk: Set up sturdy desk, ergonomic chair, laptop stand, mousepad and surge power strip." },
+        { tag:"setup", text:"Lighting & Air: Ensure good warm desk lighting for evening focus and comfortable room fan/air ventilation." },
+        { tag:"setup", text:"Security & Keys: Get duplicate room key made; keep original and spare in separate secure pockets." }
+      ]
+    },
+    {
+      title:"Phase 2 — Kitchen, Nutrition & Water Setup",
+      subtitle:"Cookware procurement, clean water supply, and pantry staples",
+      tasks:[
+        { tag:"food", text:"Cooking Gear: Procure induction cooktop (or single gas burner + cylinder) and test electrical outlet." },
+        { tag:"food", text:"Essential Cookware: Get 2–3L pressure cooker, non-stick/cast-iron pan, kadai, spatula, cutting board & knife." },
+        { tag:"food", text:"Tableware: Buy 2 plates, 2 bowls, spoons, fork, tea mug, water bottle & scrubber/dish soap." },
+        { tag:"food", text:"Clean Drinking Water: Setup recurring 20L RO water jar delivery supplier (or water filter subscription)." },
+        { tag:"food", text:"Pantry Staples: Stock oats, eggs, paneer, brown rice, yellow/red dal, salt, turmeric, spices & cooking oil." },
+        { tag:"food", text:"Fresh Produce: Find nearest local vegetable mandi/thela and dairy store for fresh daily milk/curd/eggs." }
+      ]
+    },
+    {
+      title:"Phase 3 — Gym & IELTS Coaching Registration",
+      subtitle:"Lock in morning workout facility and local IELTS test center/batch",
+      tasks:[
+        { tag:"health", text:"Gym Hunt: Visit 2–3 nearby gyms within 10-15 min walking distance (check equipment & morning crowd)." },
+        { tag:"health", text:"Gym Membership: Negotiate and lock in a 3-month membership; confirm 5:20 AM early morning opening." },
+        { tag:"setup", text:"IELTS Coaching: Visit Jaipur IELTS coaching institute; take diagnostic test & collect prep materials." },
+        { tag:"health", text:"Medical Pharmacy: Locate nearest 24/7 chemist & clinic; buy emergency kit (paracetamol, ORS, band-aids, antacid)." }
+      ]
+    },
+    {
+      title:"Month 1 Living System — Foundation & Habits",
+      subtitle:"Build effortless cooking rhythm, morning wakeups, budget control & Jaipur orientation",
+      tasks:[
+        { tag:"health", text:"Sleep Discipline: Lock in 10:00 PM sleep and 5:00 AM alarm without hitting snooze 6 days a week." },
+        { tag:"food", text:"Cooking Rhythm: Master 6:20 AM breakfast & lunch cooking in under 75 mins (eggs/oats/dal)." },
+        { tag:"budget", text:"Budget Control: Record every daily expense; cap weekly food & personal spending at ₹2,500." },
+        { tag:"setup", text:"Room Discipline: 10-min morning bed making + 15-min nightly desk reset before bed." },
+        { tag:"setup", text:"Hydration Habit: Drink 3.5 to 4 liters of clean water daily to stay sharp in Jaipur climate." },
+        { tag:"jaipur", text:"Jaipur Grounding: Take an evening walk/jog in Central Park Jaipur." },
+        { tag:"jaipur", text:"Jaipur Grounding: Visit Albert Hall Museum / Ram Niwas Garden during a weekend evening off." },
+        { tag:"setup", text:"Focus Haven: Find 1 quiet study cafe or library in Jaipur for weekend deep work." }
+      ]
+    },
+    {
+      title:"Month 2 Living System — Optimization & Stamina",
+      subtitle:"Meal prep efficiency, progressive overload, sleep hygiene & mental wellness",
+      tasks:[
+        { tag:"health", text:"Workout Progression: Increase weights/reps in morning gym; log body weight & stamina weekly." },
+        { tag:"food", text:"High-Protein Nutrition: Ensure 100g+ daily protein intake (eggs, paneer, soya, dal, chicken) for cognitive stamina." },
+        { tag:"food", text:"Cooking Optimization: Streamline meal prep to under 45 mins with pre-boiled dal and chopped veggies." },
+        { tag:"health", text:"Mental Wellness: Call family/close friends 3-4 times a week during 5:00–6:00 PM free slot." },
+        { tag:"weekly", text:"English Speaking Immersion: Practice speaking in English during daily errands, gym, and evening calls." },
+        { tag:"jaipur", text:"Jaipur Exploration: Watch sunset from Nahargarh Fort or visit Amer Fort on a Sunday." },
+        { tag:"setup", text:"Deep Clean Reset: Clean room thoroughly, wash AC filter/fan, and review month-end living expenditure." }
+      ]
+    },
+    {
+      title:"Month 3 Living System — Peak Readiness & Exit Prep",
+      subtitle:"Consolidate physical transformation, settle accounts, and prepare next transition",
+      tasks:[
+        { tag:"health", text:"Physical Audit: Compare Day 1 vs Day 80 fitness, posture, body weight, and morning alertness." },
+        { tag:"setup", text:"Notice Period: Give formal 30-day notice to landlord for security deposit return & handover date." },
+        { tag:"setup", text:"Overseas Career Dossier: Organize all IELTS results, resumes, GitHub portfolio links, and degree scans." },
+        { tag:"setup", text:"Account Settlement: Clear final electricity sub-meter bill, return 20L water cans & settle Wi-Fi router." },
+        { tag:"setup", text:"Kitchen Clearance: Sell, donate, or pack cooking utensils not needed for the next destination." },
+        { tag:"jaipur", text:"Jaipur Farewell Walk: Celebrate 90 days with your favorite Jaipur local food spot & sunset walk." },
+        { tag:"setup", text:"90-Day Living Retrospective: Document lessons in self-reliance, cooking, physical strength, and autonomy." }
+      ]
+    },
+    {
+      title:"Weekly Living Reset Routine (Every Sunday)",
+      subtitle:"Repeatable maintenance protocol to keep room, food, and budget completely friction-free",
+      tasks:[
+        { tag:"weekly", text:"Room Deep Clean: Sweep and mop room floor, wipe desk surface, empty dustbin." },
+        { tag:"weekly", text:"Laundry Cycle: Wash all bedsheets, pillow covers, towels, and gym outfits; iron shirts." },
+        { tag:"weekly", text:"Pantry & Fridge Audit: Discard old food, wipe cooking counter, restock oats, eggs, and spices." },
+        { tag:"weekly", text:"Weekly Budget Audit: Check UPI statement and compare weekly spend vs ₹2,500 target." },
+        { tag:"weekly", text:"Weigh-in & Energy Check: Note Sunday body weight and general energy level." },
+        { tag:"weekly", text:"Prep Next Week: Plan next week's meals and identify any upcoming coaching or study tests." }
+      ]
+    }
+  ]
+};
+
+// Combine for state indexing:
+const allModules = [...studyPlan, livingPlan];
+
+const STORAGE_KEY = "jaipur90day_v1";
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+let currentTabId = state.currentMonth || "m1";
+let activeLivingFilter = "all";
+
+// Ensure custom tasks list in state
+if(!Array.isArray(state.customLivingTasks)){
+  state.customLivingTasks = [];
+}
+
+// Contacts state
+if(!state.contacts){
+  state.contacts = {};
+}
+
+function save(){
+  state.currentMonth = currentTabId;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function key(moduleId, weekIndex, taskIndex){
+  return `${moduleId}-${weekIndex}-${taskIndex}`;
+}
+
+// Counts calculation
+function getModuleCounts(mod){
+  let total=0, done=0;
+  if(!mod || !mod.weeks) return {total:0,done:0,pct:0};
+  mod.weeks.forEach((w,wi)=>{
+    w.tasks.forEach((t,ti)=>{
+      total++;
+      if(state[key(mod.id,wi,ti)]) done++;
+    });
+  });
+  // Add custom tasks if this is living module
+  if(mod.id === "living" && state.customLivingTasks && state.customLivingTasks.length > 0){
+    state.customLivingTasks.forEach((ct, ci)=>{
+      total++;
+      if(ct.done) done++;
+    });
+  }
+  return {total,done,pct:total?Math.round(done/total*100):0};
+}
+
+function getStudyCounts(){
+  let total=0, done=0;
+  studyPlan.forEach(m=>{
+    const c=getModuleCounts(m);
+    total += c.total;
+    done += c.done;
+  });
+  return {total,done,pct:total?Math.round(done/total*100):0};
+}
+
+function getLivingCounts(){
+  return getModuleCounts(livingPlan);
+}
+
+function getOverallCounts(){
+  const s = getStudyCounts();
+  const l = getLivingCounts();
+  const total = s.total + l.total;
+  const done = s.done + l.done;
+  return {total,done,pct:total?Math.round(done/total*100):0, study:s, living:l};
+}
+
+// Render Tabs
+function renderTabs(){
+  const el=document.getElementById("tabs");
+  el.innerHTML="";
+
+  // Study Month Tabs
+  studyPlan.forEach((m,i)=>{
+    const b=document.createElement("button");
+    b.className="tab"+(m.id===currentTabId?" active":"");
+    const counts = getModuleCounts(m);
+    b.innerHTML=`Month ${i+1} <span style="font-size:11px;opacity:0.75">(${counts.done}/${counts.total})</span>`;
+    b.onclick=()=>{
+      currentTabId=m.id;
+      save();
+      render();
+      window.scrollTo({top:0,behavior:"smooth"});
+    };
+    el.appendChild(b);
+  });
+
+  // Living & Preparation Tab
+  const livingBtn = document.createElement("button");
+  livingBtn.className = "tab tab-living" + (currentTabId==="living"?" active":"");
+  const lc = getLivingCounts();
+  livingBtn.innerHTML = `<span class="badge-dot"></span> 🏠 Living & Prep <span style="font-size:11px;opacity:0.85">(${lc.done}/${lc.total})</span>`;
+  livingBtn.onclick=()=>{
+    currentTabId="living";
+    save();
+    render();
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
+  el.appendChild(livingBtn);
+}
+
+// Render Header & Overall
+function renderOverall(){
+  const overall = getOverallCounts();
+  document.getElementById("overallPct").textContent=`${overall.pct}%`;
+  document.getElementById("overallText").textContent=`${overall.done} / ${overall.total} total mission tasks completed`;
+  document.getElementById("ring").style.background=
+    `conic-gradient(var(--accent) ${overall.pct*3.6}deg, #2a2a33 ${overall.pct*3.6}deg)`;
+
+  document.getElementById("studySubVal").textContent = `${overall.study.done}/${overall.study.total} (${overall.study.pct}%)`;
+  document.getElementById("livingSubVal").textContent = `${overall.living.done}/${overall.living.total} (${overall.living.pct}%)`;
+}
+
+// Helper to format tags
+function getTagBadge(tag){
+  if(!tag) return "";
+  let tagClass = "tag-" + tag.toLowerCase();
+  let tagLabel = tag.toUpperCase();
+  if(tag === "setup") tagLabel = "SETUP";
+  else if(tag === "food") tagLabel = "COOKING/MEALS";
+  else if(tag === "health") tagLabel = "GYM/HEALTH";
+  else if(tag === "budget") tagLabel = "BUDGET";
+  else if(tag === "jaipur") tagLabel = "JAIPUR LIFE";
+  else if(tag === "weekly") tagLabel = "WEEKLY RESET";
+  else if(tag === "tech") tagLabel = "AI/ML";
+  else if(tag === "ielts") tagLabel = "IELTS";
+  else if(tag === "interview") tagLabel = "INTERVIEW";
+  else if(tag === "career") tagLabel = "CAREER";
+
+  return `<span class="taskTag ${tagClass}">${tagLabel}</span>`;
+}
+
+// Render active tab view (Month 1, 2, 3 OR Living Module)
+function renderCurrentModule(){
+  const isLiving = (currentTabId === "living");
+  const mod = isLiving ? livingPlan : studyPlan.find(m=>m.id===currentTabId);
+  const c = getModuleCounts(mod);
+
+  document.getElementById("monthTitle").textContent = mod.title;
+  document.getElementById("monthSubtitle").textContent = mod.subtitle;
+  document.getElementById("monthPct").textContent = `${c.pct}%`;
+  
+  const barWrap = document.getElementById("monthBarWrap");
+  if(isLiving) barWrap.classList.add("good"); else barWrap.classList.remove("good");
+  document.getElementById("monthBar").style.width = `${c.pct}%`;
+
+  const filterBar = document.getElementById("filterBar");
+  const livingExtras = document.getElementById("livingExtras");
+  if(isLiving){
+    filterBar.style.display = "flex";
+    livingExtras.style.display = "block";
+    loadContacts();
+  } else {
+    filterBar.style.display = "none";
+    livingExtras.style.display = "none";
+  }
+
+  const weeksEl = document.getElementById("weeks");
+  weeksEl.innerHTML = "";
+
+  mod.weeks.forEach((w, wi)=>{
+    // Check if any task in this week matches filter
+    let visibleTasks = [];
+    w.tasks.forEach((t, ti)=>{
+      const taskObj = (typeof t === "string") ? { text:t, tag:"study" } : t;
+      if(!isLiving || activeLivingFilter === "all" || taskObj.tag === activeLivingFilter){
+        visibleTasks.push({ taskObj, ti });
+      }
+    });
+
+    if(isLiving && activeLivingFilter !== "all" && visibleTasks.length === 0){
+      return; // Skip week if no tasks match filter
+    }
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "week";
+
+    // Count done in this week
+    let weekTotal = w.tasks.length;
+    let weekDone = 0;
+    w.tasks.forEach((_, ti)=>{
+      if(state[key(mod.id, wi, ti)]) weekDone++;
+    });
+
+    const head = document.createElement("div");
+    head.className = "weekHead";
+    const collapseKey = `collapse-${mod.id}-${wi}`;
+    const isCollapsed = !!state[collapseKey];
+
+    head.innerHTML = `
+      <div>
+        <h3>
+          <span>${w.title}</span>
+          <span style="font-size:12px;opacity:0.6">${isCollapsed ? "▼" : "▲"}</span>
+        </h3>
+        <p>${w.subtitle}</p>
+      </div>
+      <span class="pill ${weekDone===weekTotal?'pill-good':''}">${weekDone}/${weekTotal}</span>
+    `;
+
+    const body = document.createElement("div");
+    body.className = "weekBody" + (isCollapsed ? " hidden" : "");
+
+    head.onclick = ()=>{
+      state[collapseKey] = !state[collapseKey];
+      save();
+      renderCurrentModule();
+    };
+
+    visibleTasks.forEach(({taskObj, ti})=>{
+      const taskKey = key(mod.id, wi, ti);
+      const row = document.createElement("div");
+      row.className = "task";
+      const checked = !!state[taskKey];
+      if(checked) row.classList.add("done");
+
+      row.innerHTML = `
+        <input type="checkbox" id="${taskKey}" ${checked ? "checked" : ""}>
+        <label for="${taskKey}">
+          ${getTagBadge(taskObj.tag)}
+          ${taskObj.text}
+        </label>
+      `;
+
+      row.querySelector("input").addEventListener("change", (e)=>{
+        state[taskKey] = e.target.checked;
+        save();
+        render();
+        showToast(e.target.checked ? "Task completed 🎉" : "Task unchecked");
+      });
+
+      body.appendChild(row);
+    });
+
+    wrapper.appendChild(head);
+    wrapper.appendChild(body);
+    weeksEl.appendChild(wrapper);
+  });
+
+  // Render Custom Tasks section if on Living Module
+  if(isLiving && (activeLivingFilter === "all" || activeLivingFilter === "custom")){
+    renderCustomTasks(weeksEl);
+  }
+}
+
+// Render Custom Tasks
+function renderCustomTasks(container){
+  const customTasks = state.customLivingTasks || [];
+  if(customTasks.length === 0 && activeLivingFilter === "custom"){
+    const emptyMsg = document.createElement("div");
+    emptyMsg.style.padding = "20px";
+    emptyMsg.style.textAlign = "center";
+    emptyMsg.style.color = "var(--muted)";
+    emptyMsg.textContent = "No custom tasks added yet. Use the box below to add your own!";
+    container.appendChild(emptyMsg);
+    return;
+  }
+  if(customTasks.length === 0) return;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "week";
+
+  const total = customTasks.length;
+  const done = customTasks.filter(t=>t.done).length;
+
+  const head = document.createElement("div");
+  head.className = "weekHead";
+  head.innerHTML = `
+    <div>
+      <h3>⭐ Personal Custom Living Tasks</h3>
+      <p>Tasks created by you for your specific Jaipur journey</p>
+    </div>
+    <span class="pill ${done===total?'pill-good':''}">${done}/${total}</span>
+  `;
+
+  const body = document.createElement("div");
+  body.className = "weekBody";
+
+  customTasks.forEach((ct, index)=>{
+    const row = document.createElement("div");
+    row.className = "task" + (ct.done ? " done" : "");
+    const taskId = `custom-task-${index}`;
+
+    row.innerHTML = `
+      <input type="checkbox" id="${taskId}" ${ct.done ? "checked" : ""}>
+      <label for="${taskId}">
+        ${getTagBadge(ct.category || "custom")}
+        ${ct.text}
+      </label>
+      <button class="deleteBtn" title="Delete task" data-idx="${index}">✕</button>
+    `;
+
+    row.querySelector("input").addEventListener("change", (e)=>{
+      state.customLivingTasks[index].done = e.target.checked;
+      save();
+      render();
+      showToast(e.target.checked ? "Custom task completed! ⭐" : "Task unchecked");
+    });
+
+    row.querySelector(".deleteBtn").addEventListener("click", (e)=>{
+      e.stopPropagation();
+      if(confirm(`Delete task: "${ct.text}"?`)){
+        state.customLivingTasks.splice(index, 1);
+        save();
+        render();
+        showToast("Task removed");
+      }
+    });
+
+    body.appendChild(row);
+  });
+
+  wrapper.appendChild(head);
+  wrapper.appendChild(body);
+  container.appendChild(wrapper);
+}
+
+// Contacts handlers
+const contactFields = ["landlord", "water", "chemist", "gym", "wifi", "rent"];
+function loadContacts(){
+  contactFields.forEach(f=>{
+    const el = document.getElementById("contact_" + f);
+    if(el){
+      el.value = (state.contacts && state.contacts[f]) || "";
+      el.oninput = (e)=>{
+        if(!state.contacts) state.contacts = {};
+        state.contacts[f] = e.target.value;
+        save();
+      };
+    }
+  });
+}
+
+// Overall Render
+function render(){
+  renderTabs();
+  renderCurrentModule();
+  renderOverall();
+}
+
+// Toast
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;
+  t.classList.add("show");
+  clearTimeout(window.__toast);
+  window.__toast=setTimeout(()=>t.classList.remove("show"),1400);
+}
+
+// Filter buttons
+document.querySelectorAll(".filterBtn").forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll(".filterBtn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    activeLivingFilter = btn.dataset.filter;
+    renderCurrentModule();
+  };
+});
+
+// Clickable sub-stat boxes in Hero
+document.getElementById("statBoxStudy").onclick = ()=>{
+  currentTabId = "m1";
+  save();
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+};
+document.getElementById("statBoxLiving").onclick = ()=>{
+  currentTabId = "living";
+  save();
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+};
+
+// Add Custom Task Button
+document.getElementById("addCustomTaskBtn").onclick = ()=>{
+  const input = document.getElementById("customTaskInput");
+  const categorySelect = document.getElementById("customTaskCategory");
+  const text = input.value.trim();
+  if(!text) return;
+
+  if(!state.customLivingTasks) state.customLivingTasks = [];
+  state.customLivingTasks.push({
+    text: text,
+    category: categorySelect.value || "custom",
+    done: false,
+    createdAt: Date.now()
+  });
+
+  input.value = "";
+  save();
+  render();
+  showToast("Added custom task 🎯");
+};
+
+document.getElementById("customTaskInput").addEventListener("keypress", (e)=>{
+  if(e.key === "Enter"){
+    document.getElementById("addCustomTaskBtn").click();
+  }
+});
+
+// Reset Button
+document.getElementById("resetBtn").onclick=()=>{
+  if(!confirm("Are you sure you want to reset your 90-day progress? This will clear all checked items.")) return;
+  const preservedContacts = state.contacts || {};
+  state = { currentMonth: currentTabId, contacts: preservedContacts, customLivingTasks: [] };
+  save();
+  render();
+  showToast("Progress reset");
+};
+
+// Export Progress Data
+document.getElementById("exportBtn").onclick=()=>{
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+  const downloadAnchor = document.createElement("a");
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", `jaipur_90day_mission_backup_${new Date().toISOString().slice(0,10)}.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+  showToast("Backup exported 📁");
+};
+
+// Initial run
+render();
+</script>
+</body>
+</html>

@@ -11,6 +11,15 @@ export const APP_MODULES: MnsWorldModule[] = [
     enabled: true,
   },
   {
+    id: "jaipur",
+    route: "/jaipur",
+    titleKey: "modules.jaipur.title",
+    descriptionKey: "modules.jaipur.desc",
+    icon: "MapPin",
+    badge: "90-Day Mission",
+    enabled: true,
+  },
+  {
     id: "life-goals",
     route: "/life-goals",
     titleKey: "modules.goals.title",

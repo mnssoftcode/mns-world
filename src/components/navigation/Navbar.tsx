@@ -18,6 +18,7 @@ import {
   X,
   Target,
   BookOpen,
+  MapPin,
 } from "lucide-react";
 
 export function Navbar() {
@@ -63,6 +64,7 @@ export function Navbar() {
   const navItems = [
     { href: "/", label: t("common.appName"), icon: Home },
     { href: "/career", label: t("modules.career.title"), icon: Compass },
+    { href: "/jaipur", label: t("modules.jaipur.title"), icon: MapPin },
     { href: "/life-goals", label: t("modules.goals.title"), icon: Target },
     { href: "/enjoy", label: t("modules.enjoy.title"), icon: Sparkles },
     { href: "/web-hub", label: t("modules.webHub.title"), icon: Globe },
