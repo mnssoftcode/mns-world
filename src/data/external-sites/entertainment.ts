@@ -1,0 +1,55 @@
+import { ExternalResource } from "@/types";
+
+export const ENTERTAINMENT_SITES: ExternalResource[] = [
+  {
+    id: "youtube",
+    category: "Entertainment",
+    name: "YouTube",
+    description: "The global video platform for lectures, podcasts, tech talks, and music.",
+    url: "https://www.youtube.com/",
+    featured: true,
+    tags: ["video", "podcasts", "tutorials"],
+  },
+  {
+    id: "youtube-music",
+    category: "Entertainment",
+    name: "YouTube Music",
+    description: "High-fidelity music streaming, tailored focus playlists, and ambient sounds.",
+    url: "https://music.youtube.com/",
+    featured: true,
+    tags: ["music", "focus", "audio"],
+  },
+  {
+    id: "fmhy-video",
+    category: "Entertainment",
+    name: "FMHY Video Directory",
+    description: "Curated community index of web video streaming tools, directories, and players.",
+    url: "https://fmhy.net/video",
+    featured: true,
+    tags: ["directory", "video", "curated"],
+  },
+  {
+    id: "aethoflix",
+    category: "Entertainment",
+    name: "Aethoflix",
+    description: "Minimalist third-party media portal for movies and trending series.",
+    url: "https://aethoflix-eight.vercel.app/",
+    tags: ["movies", "shows", "third-party"],
+  },
+  {
+    id: "net77",
+    category: "Entertainment",
+    name: "Net77",
+    description: "Fast multi-source stream launcher for cinema releases and episodes.",
+    url: "https://net77.cc/home",
+    tags: ["cinema", "entertainment", "third-party"],
+  },
+  {
+    id: "bingr",
+    category: "Entertainment",
+    name: "Bingr",
+    description: "Streamlined tracker and media launcher for binge-watching shows.",
+    url: "https://bingr.one/",
+    tags: ["streaming", "tracker", "third-party"],
+  },
+];

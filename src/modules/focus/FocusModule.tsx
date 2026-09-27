@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useMnsApp } from "@/lib/i18n/context";
-import { storageRepository, DEFAULT_FOCUS_SETTINGS } from "@/lib/storage";
+import { storageRepository } from "@/lib/storage";
 import { FocusSession, FocusSettings } from "@/types";
 import { gameAudio } from "@/lib/sound";
 import {
@@ -17,24 +17,43 @@ import {
   Minimize2,
   Flame,
   CheckCircle,
-  Zap,
 } from "lucide-react";
 
 type TimerState = "IDLE" | "RUNNING" | "PAUSED" | "COMPLETED";
 type TimerMode = "work" | "break";
 
 export function FocusModule() {
-  const { t, preferences, awardXp } = useMnsApp();
+  const { t, awardXp } = useMnsApp();
 
-  const [settings, setSettings] = useState<FocusSettings>(DEFAULT_FOCUS_SETTINGS);
+  const [settings, setSettings] = useState<FocusSettings>(() => storageRepository.getFocusSettings());
   const [mode, setMode] = useState<TimerMode>("work");
   const [timerState, setTimerState] = useState<TimerState>("IDLE");
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(25 * 60);
-  const [totalSeconds, setTotalSeconds] = useState<number>(25 * 60);
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(() => {
+    return storageRepository.getFocusSettings().workMinutes * 60;
+  });
+  const [totalSeconds, setTotalSeconds] = useState<number>(() => {
+    return storageRepository.getFocusSettings().workMinutes * 60;
+  });
   const [ambientMode, setAmbientMode] = useState<boolean>(false);
-  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
-  const [todayMinutes, setTodayMinutes] = useState<number>(0);
-  const [completedCount, setCompletedCount] = useState<number>(0);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
+    return storageRepository.getFocusSettings().soundEnabled;
+  });
+  const [todayMinutes, setTodayMinutes] = useState<number>(() => {
+    const sessions = storageRepository.getFocusSessions();
+    const today = new Date().toDateString();
+    const todaySessions = sessions.filter(
+      (s) => s.completed && new Date(s.startedAt).toDateString() === today
+    );
+    const totalSecs = todaySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+    return Math.round(totalSecs / 60);
+  });
+  const [completedCount, setCompletedCount] = useState<number>(() => {
+    const sessions = storageRepository.getFocusSessions();
+    const today = new Date().toDateString();
+    return sessions.filter(
+      (s) => s.completed && new Date(s.startedAt).toDateString() === today
+    ).length;
+  });
 
   // Custom inputs
   const [customWork, setCustomWork] = useState<number>(25);
@@ -43,27 +62,8 @@ export function FocusModule() {
 
   // Precision timestamp refs to avoid drift
   const targetEndTimeRef = useRef<number | null>(null);
-  const pausedRemainingRef = useRef<number>(25 * 60);
+  const pausedRemainingRef = useRef<number>(settings.workMinutes * 60);
   const sessionStartTimeRef = useRef<string | null>(null);
-
-  // Load metrics and settings on mount
-  useEffect(() => {
-    const loadedSettings = storageRepository.getFocusSettings();
-    setSettings(loadedSettings);
-    setSoundEnabled(loadedSettings.soundEnabled);
-    setRemainingSeconds(loadedSettings.workMinutes * 60);
-    setTotalSeconds(loadedSettings.workMinutes * 60);
-    pausedRemainingRef.current = loadedSettings.workMinutes * 60;
-
-    calculateTodayStats();
-
-    const handleUpdate = () => {
-      calculateTodayStats();
-    };
-
-    window.addEventListener("mnsworld:focus-sessions:updated", handleUpdate);
-    return () => window.removeEventListener("mnsworld:focus-sessions:updated", handleUpdate);
-  }, []);
 
   const calculateTodayStats = () => {
     const sessions = storageRepository.getFocusSessions();
@@ -77,29 +77,6 @@ export function FocusModule() {
     setTodayMinutes(Math.round(totalSecs / 60));
     setCompletedCount(todaySessions.length);
   };
-
-  // Timestamp interval loop
-  useEffect(() => {
-    if (timerState !== "RUNNING") return;
-
-    const interval = setInterval(() => {
-      if (!targetEndTimeRef.current) return;
-
-      const now = Date.now();
-      const diffMs = targetEndTimeRef.current - now;
-      const diffSec = Math.max(0, Math.ceil(diffMs / 1000));
-
-      setRemainingSeconds(diffSec);
-
-      if (diffSec <= 0) {
-        clearInterval(interval);
-        handleTimerCompletion();
-      }
-    }, 200);
-
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timerState, mode]);
 
   const handleTimerCompletion = () => {
     setTimerState("COMPLETED");
@@ -133,6 +110,39 @@ export function FocusModule() {
       pausedRemainingRef.current = workSecs;
     }
   };
+
+  // Sync session updates
+  useEffect(() => {
+    const handleUpdate = () => {
+      calculateTodayStats();
+    };
+
+    window.addEventListener("mnsworld:focus-sessions:updated", handleUpdate);
+    return () => window.removeEventListener("mnsworld:focus-sessions:updated", handleUpdate);
+  }, []);
+
+  // Timestamp interval loop
+  useEffect(() => {
+    if (timerState !== "RUNNING") return;
+
+    const interval = setInterval(() => {
+      if (!targetEndTimeRef.current) return;
+
+      const now = Date.now();
+      const diffMs = targetEndTimeRef.current - now;
+      const diffSec = Math.max(0, Math.ceil(diffMs / 1000));
+
+      setRemainingSeconds(diffSec);
+
+      if (diffSec <= 0) {
+        clearInterval(interval);
+        handleTimerCompletion();
+      }
+    }, 200);
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timerState, mode]);
 
   const startTimer = () => {
     gameAudio.playClick(soundEnabled);
@@ -239,7 +249,6 @@ export function FocusModule() {
             </span>
             {timerState === "RUNNING" && (
               <span className="flex h-2.5 w-2.5 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
               </span>
             )}
@@ -396,7 +405,7 @@ export function FocusModule() {
       {/* Custom Duration Modal */}
       {showCustomModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-sm glass-elevated rounded-3xl p-6 border border-[var(--border-base)] animate-card-pop">
+          <div className="w-full max-w-sm glass-elevated rounded-3xl p-6 border border-[var(--border-base)]">
             <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">
               {t("focus.presetCustom")}
             </h3>

@@ -21,6 +21,32 @@
     "language": "Language",
     "theme": "Theme"
   },
+  "modules": {
+    "career": {
+      "title": "Career Command",
+      "desc": "Overview, execution roadmap, productivity tasks, deep focus, and AI/ML learning."
+    },
+    "goals": {
+      "title": "Life Goals",
+      "desc": "Long-term vision, yearly milestones, daily habit tracking, and life direction."
+    },
+    "enjoy": {
+      "title": "Enjoy & Boredom",
+      "desc": "118 spontaneous quest generators, random excitement, and media shortcuts."
+    },
+    "webHub": {
+      "title": "Web Hub",
+      "desc": "Launchpad for essential travel, project deployments, dev utilities, and everyday tools."
+    },
+    "library": {
+      "title": "Library",
+      "desc": "Free web reading directories, public domain books, and research papers."
+    },
+    "settings": {
+      "title": "Settings",
+      "desc": "Appearance, language, data backup, accessibility, and custom launchers."
+    }
+  },
   "onboarding": {
     "welcome": "Welcome to MnsWorld",
     "subtitle": "Your private, calm digital universe. Let's calibrate your environment.",
@@ -38,10 +64,10 @@
     "greetingNight": "Good night",
     "worldHeading": "Your Operating Space",
     "worldSubheading": "Focus your mind, explore your career milestones, or spark spontaneous action.",
-    "portalsHeading": "Portals",
+    "portalsHeading": "Modules & Portals",
     "liveMetrics": "System Telemetry",
     "quickActions": "Quick Actions",
-    "boredTitle": "I'm Bored",
+    "boredTitle": "Enjoy / I'm Bored",
     "boredDesc": "Turn decision paralysis into one concrete, high-energy action.",
     "careerTitle": "Career Command",
     "careerDesc": "Track the master roadmap to Australia 2027 and AI/ML transition.",
@@ -60,9 +86,26 @@
     "footerNote": "One small action is enough. You don't have to make the whole day productive.",
     "repeatNotice": "Spun again! No immediate repeat."
   },
+  "enjoy": {
+    "title": "Enjoy & Spontaneous Quests",
+    "subtitle": "Preserving the 118-activity engine, random idea shortcuts, and curated media portals.",
+    "tabBored": "I'm Bored (118 Activities)",
+    "tabRandom": "Random Generator",
+    "tabMedia": "Entertainment Hub",
+    "randomTitle": "Random Fun Generator",
+    "randomSubtitle": "Click a category below to generate an instantaneous idea or prompt.",
+    "mediaTitle": "Entertainment Launchpad",
+    "mediaSubtitle": "Hand-picked external streaming portals, video directories, and music."
+  },
   "career": {
     "title": "Career Command Center",
     "subtitle": "Master execution path: MCA Software Engineer → AI/ML Engineer in Australia.",
+    "tabOverview": "Overview",
+    "tabRoadmap": "Roadmap (15 Phases)",
+    "tabProductivity": "Productivity",
+    "tabFocus": "Focus Now",
+    "tabLearning": "AI/ML Learning",
+    "tabExecution": "Australia 2027 Execution",
     "primaryRole": "Primary Target",
     "secondaryRoles": "Secondary Roles",
     "backupRole": "Bridge / Backup",
@@ -77,6 +120,33 @@
     "progressSummary": "Milestone Progress: {done} of {total} items completed ({pct}%)",
     "expandAll": "Expand All",
     "collapseAll": "Collapse All"
+  },
+  "goals": {
+    "title": "Life Goals & Habits",
+    "subtitle": "Define your horizon, track daily discipline, and steer your life direction.",
+    "tabGoals": "Goals & Milestones",
+    "tabHabits": "Daily Habits",
+    "tabPersonal": "Personal Life",
+    "tabDirection": "Life Direction",
+    "longTerm": "Long-Term Vision",
+    "yearly": "Yearly Targets",
+    "current": "Immediate Actions",
+    "addGoal": "New Goal",
+    "addHabit": "New Habit"
+  },
+  "webHub": {
+    "title": "External Website Hub",
+    "subtitle": "Curated launchpad for everyday web services, developer tools, and travel.",
+    "allFilter": "All Tools",
+    "searchPlaceholder": "Search external resources, tags, or services...",
+    "disclaimer": "MnsWorld provides links to external websites for convenience. All services run independently."
+  },
+  "library": {
+    "title": "Knowledge & Reading Library",
+    "subtitle": "Directory of free public domain classics, open repositories, and reading utilities.",
+    "allFilter": "All Resources",
+    "searchPlaceholder": "Search books, research platforms, or archives...",
+    "notice": "MnsWorld acts as an external index and does not host copyrighted publications."
   },
   "focus": {
     "title": "Focus Now",
@@ -117,7 +187,9 @@
     "importButton": "Import Backup",
     "clearAllButton": "Factory Reset Local Data",
     "clearConfirm": "Are you sure? This will delete all local preferences, focus history, and progress.",
-    "savedNotice": "Preferences saved successfully."
+    "savedNotice": "Preferences saved successfully.",
+    "customLinksHeading": "Custom Web Launchers",
+    "customLinksDesc": "Add your own favorite external website links to the Web Hub."
   },
   "errors": {
     "pageNotFound": "Portal Not Found",

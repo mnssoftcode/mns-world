@@ -6,9 +6,7 @@ import { WALLPAPER_PRESETS } from "@/data/wallpapers";
 import {
   Image as ImageIcon,
   Upload,
-  Link as LinkIcon,
   X,
-  Sparkles,
   Sliders,
   Check,
   RotateCcw,
@@ -58,8 +56,8 @@ export function WallpaperModal({ isOpen, onClose }: WallpaperModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-      <div className="w-full max-w-2xl glass-elevated rounded-3xl p-6 sm:p-8 border border-white/20 shadow-2xl animate-card-pop max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+      <div className="w-full max-w-2xl glass-elevated rounded-3xl p-6 sm:p-8 border border-white/20 shadow-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)] mb-6">
           <div className="flex items-center gap-3">

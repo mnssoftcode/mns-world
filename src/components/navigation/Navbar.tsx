@@ -12,11 +12,12 @@ import {
   Laptop,
   Sparkles,
   Compass,
-  Timer,
   Sliders,
   Home,
   Menu,
   X,
+  Target,
+  BookOpen,
 } from "lucide-react";
 
 export function Navbar() {
@@ -61,10 +62,12 @@ export function Navbar() {
 
   const navItems = [
     { href: "/", label: t("common.appName"), icon: Home },
-    { href: "/bored", label: t("home.boredTitle"), icon: Sparkles },
-    { href: "/career", label: t("home.careerTitle"), icon: Compass },
-    { href: "/focus", label: t("home.focusTitle"), icon: Timer },
-    { href: "/settings", label: t("home.settingsTitle"), icon: Sliders },
+    { href: "/career", label: t("modules.career.title"), icon: Compass },
+    { href: "/life-goals", label: t("modules.goals.title"), icon: Target },
+    { href: "/enjoy", label: t("modules.enjoy.title"), icon: Sparkles },
+    { href: "/web-hub", label: t("modules.webHub.title"), icon: Globe },
+    { href: "/library", label: t("modules.library.title"), icon: BookOpen },
+    { href: "/settings", label: t("modules.settings.title"), icon: Sliders },
   ];
 
   const cycleTheme = () => {
@@ -142,26 +145,34 @@ export function Navbar() {
           {/* Language Switcher */}
           <button
             onClick={toggleLanguage}
-            title={locale === "en" ? "Switch to Hindi (हिन्दी)" : "Switch to English"}
+            title={isLoaded ? (locale === "en" ? "Switch to Hindi (हिन्दी)" : "Switch to English") : "Switch language"}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl glass-subtle hover:bg-white/15 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
             aria-label="Toggle language"
+            suppressHydrationWarning
           >
             <Globe className="w-3.5 h-3.5" />
-            <span className="uppercase text-[11px] font-mono font-bold">
-              {locale}
+            <span className="uppercase text-[11px] font-mono font-bold" suppressHydrationWarning>
+              {isLoaded ? locale : "en"}
             </span>
           </button>
 
           {/* Theme Switcher */}
           <button
             onClick={cycleTheme}
-            title={`Current theme: ${theme}. Click to switch.`}
+            title={isLoaded ? `Current theme: ${theme}. Click to switch.` : "Toggle theme"}
             className="flex items-center justify-center w-8 h-8 rounded-xl glass-subtle hover:bg-white/15 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
             aria-label="Cycle theme"
+            suppressHydrationWarning
           >
-            {theme === "dark" && <Moon className="w-4 h-4 text-indigo-300" />}
-            {theme === "light" && <Sun className="w-4 h-4 text-amber-500" />}
-            {theme === "system" && <Laptop className="w-4 h-4 text-blue-400" />}
+            {isLoaded ? (
+              <>
+                {theme === "dark" && <Moon className="w-4 h-4 text-indigo-300" />}
+                {theme === "light" && <Sun className="w-4 h-4 text-amber-500" />}
+                {theme === "system" && <Laptop className="w-4 h-4 text-blue-400" />}
+              </>
+            ) : (
+              <Moon className="w-4 h-4 text-indigo-300" />
+            )}
           </button>
 
           {/* Mobile Menu Button */}
@@ -177,7 +188,7 @@ export function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden mt-2 p-3 rounded-2xl glass-elevated flex flex-col gap-1.5 animate-card-pop border border-[var(--border-base)]">
+        <div className="md:hidden mt-2 p-3 rounded-2xl glass-elevated flex flex-col gap-1.5 border border-[var(--border-base)]">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -200,10 +211,10 @@ export function Navbar() {
               </Link>
             );
           })}
-          {timeString && (
+          {isLoaded && timeString && (
             <div className="mt-2 pt-2 border-t border-[var(--border-subtle)] px-4 flex items-center justify-between text-xs text-[var(--text-muted)] font-mono">
-              <span>{dateString}</span>
-              <span>{timeString}</span>
+              <span suppressHydrationWarning>{dateString}</span>
+              <span suppressHydrationWarning>{timeString}</span>
             </div>
           )}
         </div>

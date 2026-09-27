@@ -24,8 +24,14 @@ const LEVEL_TITLES = [
 ];
 
 export function GameHUD() {
-  const { preferences, toggleSoundFx, xpNotification } = useMnsApp();
+  const { preferences, toggleSoundFx, xpNotification, isLoaded } = useMnsApp();
   const [wallpaperModalOpen, setWallpaperModalOpen] = useState(false);
+
+  if (!isLoaded) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 pt-2 pb-1 h-9 select-none" />
+    );
+  }
 
   const xp = preferences.xp ?? 0;
   const level = preferences.level ?? 1;
@@ -43,9 +49,9 @@ export function GameHUD() {
         {/* Left: Player Rank & Level Progress */}
         <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg glass-subtle border border-indigo-400/30 text-indigo-300">
-            <Zap className="w-3 h-3 text-amber-400 fill-amber-400 animate-pulse" />
-            <span className="font-bold">LVL {level}</span>
-            <span className="opacity-75 hidden sm:inline">• {rankTitle}</span>
+            <Zap className="w-3 h-3 text-amber-400 fill-amber-400" />
+            <span className="font-bold" suppressHydrationWarning>LVL {level}</span>
+            <span className="opacity-75 hidden sm:inline" suppressHydrationWarning>• {rankTitle}</span>
           </div>
 
           {/* Mini XP Bar */}
@@ -56,7 +62,7 @@ export function GameHUD() {
                 style={{ width: `${levelPercent}%` }}
               />
             </div>
-            <span className="text-[10px] text-[var(--text-muted)]">
+            <span className="text-[10px] text-[var(--text-muted)]" suppressHydrationWarning>
               {xpInCurrentLevel}/150 XP
             </span>
           </div>
@@ -94,10 +100,10 @@ export function GameHUD() {
 
       {/* Floating XP Reward Notification Banner */}
       {xpNotification && (
-        <div className="fixed top-20 right-6 z-50 glass-elevated px-4 py-3 rounded-2xl border border-indigo-400/50 shadow-2xl flex items-center gap-3 animate-card-pop">
+        <div className="fixed top-20 right-6 z-50 glass-elevated px-4 py-3 rounded-2xl border border-indigo-400/50 shadow-2xl flex items-center gap-3">
           <div className="p-2 rounded-xl bg-amber-500/20 text-amber-300">
             {xpNotification.leveledUp ? (
-              <Trophy className="w-5 h-5 text-amber-300 animate-bounce" />
+              <Trophy className="w-5 h-5 text-amber-300" />
             ) : (
               <Sparkles className="w-5 h-5 text-indigo-300" />
             )}

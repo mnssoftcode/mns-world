@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useMnsApp } from "@/lib/i18n/context";
 import { storageRepository } from "@/lib/storage";
 import { ThemeMode } from "@/types";
@@ -22,9 +23,12 @@ import {
   Image as ImageIcon,
   Volume2,
   VolumeX,
+  Bookmark,
+  Plus,
 } from "lucide-react";
 
 export function SettingsModule() {
+  const router = useRouter();
   const {
     preferences,
     updatePreferences,
@@ -41,6 +45,12 @@ export function SettingsModule() {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [wallpaperModalOpen, setWallpaperModalOpen] = useState(false);
+
+  // Custom links
+  const [customLinks, setCustomLinks] = useState(storageRepository.getCustomLinks());
+  const [newLinkName, setNewLinkName] = useState("");
+  const [newLinkUrl, setNewLinkUrl] = useState("");
+  const [newLinkCat, setNewLinkCat] = useState("Developer");
 
   const soundEnabled = preferences.soundFxEnabled ?? true;
 
@@ -93,7 +103,35 @@ export function SettingsModule() {
   const handleFactoryReset = () => {
     storageRepository.clearAllData();
     setShowResetConfirm(false);
-    window.location.href = "/";
+    router.push("/");
+  };
+
+  const handleAddLink = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLinkName.trim() || !newLinkUrl.trim()) return;
+
+    let formattedUrl = newLinkUrl.trim();
+    if (!/^https?:\/\//i.test(formattedUrl)) {
+      formattedUrl = "https://" + formattedUrl;
+    }
+
+    const updated = storageRepository.addCustomLink({
+      name: newLinkName.trim(),
+      url: formattedUrl,
+      category: newLinkCat,
+      description: "Custom link added from Settings.",
+    });
+
+    setCustomLinks(updated);
+    setNewLinkName("");
+    setNewLinkUrl("");
+    triggerToast();
+  };
+
+  const handleDeleteLink = (id: string) => {
+    gameAudio.playClick(soundEnabled);
+    const updated = storageRepository.deleteCustomLink(id);
+    setCustomLinks(updated);
   };
 
   return (
@@ -376,12 +414,109 @@ export function SettingsModule() {
             <p className="mt-3 text-xs font-mono text-emerald-400">{importStatus}</p>
           )}
         </div>
+
+        {/* Custom Web Launchers Section */}
+        <div className="glass-strong rounded-3xl p-6 sm:p-8 border border-[var(--border-base)] shadow-xl">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="p-2.5 rounded-xl bg-indigo-500/15 text-indigo-400">
+              <Bookmark className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">
+                {t("settings.customLinksHeading")}
+              </h2>
+              <span className="text-xs text-[var(--text-muted)] font-mono">
+                {t("settings.customLinksDesc")}
+              </span>
+            </div>
+          </div>
+
+          {/* Add Link Form */}
+          <form onSubmit={handleAddLink} className="space-y-3 mb-6 p-4 rounded-2xl glass-subtle border border-[var(--border-subtle)]">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <input
+                type="text"
+                required
+                value={newLinkName}
+                onChange={(e) => setNewLinkName(e.target.value)}
+                placeholder="Link Name (e.g. My Mail)"
+                className="bg-white/5 border border-[var(--border-subtle)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-indigo-400"
+              />
+              <input
+                type="text"
+                required
+                value={newLinkUrl}
+                onChange={(e) => setNewLinkUrl(e.target.value)}
+                placeholder="https://example.com"
+                className="bg-white/5 border border-[var(--border-subtle)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-indigo-400"
+              />
+              <div className="flex items-center gap-2">
+                <select
+                  value={newLinkCat}
+                  onChange={(e) => setNewLinkCat(e.target.value)}
+                  className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-xs rounded-xl px-2.5 py-2 text-[var(--text-secondary)] focus:outline-none"
+                >
+                  <option value="Developer">Developer</option>
+                  <option value="Projects">Projects</option>
+                  <option value="Travel">Travel</option>
+                  <option value="Everyday Tools">Tools</option>
+                  <option value="Custom">Custom</option>
+                </select>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs whitespace-nowrap cursor-pointer flex items-center gap-1"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add</span>
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {/* List of custom links */}
+          {customLinks.length === 0 ? (
+            <p className="text-xs font-mono text-[var(--text-muted)] text-center py-4">
+              No custom bookmarks added yet. Add your favorite tools above.
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {customLinks.map((link) => (
+                <div
+                  key={link.id}
+                  className="p-3 rounded-xl glass-subtle flex items-center justify-between gap-3 text-xs border border-[var(--border-subtle)]"
+                >
+                  <div className="flex items-center gap-2 truncate">
+                    <span className="font-bold text-[var(--text-primary)]">{link.name}</span>
+                    <span className="text-[10px] font-mono text-[var(--text-muted)]">
+                      ({link.category})
+                    </span>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-indigo-400 hover:underline truncate text-[11px]"
+                    >
+                      {link.url}
+                    </a>
+                  </div>
+                  <button
+                    onClick={() => handleDeleteLink(link.id)}
+                    className="text-[var(--text-muted)] hover:text-rose-400 p-1 cursor-pointer"
+                    title="Delete link"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Confirmation Modal for Reset */}
       {showResetConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="w-full max-w-md glass-elevated rounded-3xl p-6 border border-rose-500/30 animate-card-pop">
+          <div className="w-full max-w-md glass-elevated rounded-3xl p-6 border border-rose-500/30">
             <div className="flex items-center gap-3 text-rose-400 mb-3">
               <AlertTriangle className="w-6 h-6" />
               <h3 className="text-lg font-bold text-[var(--text-primary)]">Confirm Local Data Reset</h3>
@@ -411,7 +546,7 @@ export function SettingsModule() {
 
       {/* Saved Toast */}
       {showSavedToast && (
-        <div className="fixed bottom-6 right-6 z-50 glass-elevated px-4 py-3 rounded-2xl flex items-center gap-2 border border-emerald-500/40 text-emerald-300 text-xs font-bold shadow-2xl animate-card-pop">
+        <div className="fixed bottom-6 right-6 z-50 glass-elevated px-4 py-3 rounded-2xl flex items-center gap-2 border border-emerald-500/40 text-emerald-300 text-xs font-bold shadow-2xl">
           <Check className="w-4 h-4" />
           <span>{t("settings.savedNotice")}</span>
         </div>

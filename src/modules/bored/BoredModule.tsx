@@ -1,19 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { BORED_ACTIVITIES, BORED_CATEGORIES } from "@/data/bored/activities";
 import { BoredActivity } from "@/types";
 import { storageRepository } from "@/lib/storage";
 import { useMnsApp } from "@/lib/i18n/context";
 import { gameAudio } from "@/lib/sound";
 import {
-  Sparkles,
   RefreshCw,
   Bookmark,
   Check,
   ArrowRight,
   Dice5,
-  Trophy,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
@@ -21,10 +19,9 @@ import Link from "next/link";
 export function BoredModule() {
   const { t, preferences, awardXp } = useMnsApp();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [currentActivity, setCurrentActivity] = useState<BoredActivity | null>(null);
+  const [currentActivity, setCurrentActivity] = useState<BoredActivity>(() => BORED_ACTIVITIES[0]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [isPopping, setIsPopping] = useState<boolean>(false);
-  const [savedActivities, setSavedActivities] = useState<string[]>([]);
+  const [savedActivities, setSavedActivities] = useState<string[]>(() => storageRepository.getBoredHistory());
   const [justSaved, setJustSaved] = useState<boolean>(false);
   const [questCompleted, setQuestCompleted] = useState<boolean>(false);
 
@@ -55,20 +52,9 @@ export function BoredModule() {
 
       // Save to history
       storageRepository.addBoredHistory(selected.id);
-
-      // Trigger pop animation
-      setIsPopping(true);
-      setTimeout(() => setIsPopping(false), 350);
     },
     [pool, currentActivity, soundEnabled]
   );
-
-  // Initialize on mount
-  useEffect(() => {
-    setSavedActivities(storageRepository.getBoredHistory());
-    selectRandomActivity(BORED_ACTIVITIES);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleCategoryChange = (category: string) => {
     gameAudio.playClick(soundEnabled);
@@ -100,7 +86,7 @@ export function BoredModule() {
       {/* Header */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-subtle mb-3 text-xs font-mono tracking-wider uppercase text-[var(--text-secondary)] border border-[var(--border-subtle)]">
-          <Dice5 className="w-3.5 h-3.5 text-purple-400 animate-spin" />
+          <Dice5 className="w-3.5 h-3.5 text-purple-400" />
           <span>Game World Quest Terminal</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[var(--text-primary)] mb-2">
@@ -139,9 +125,7 @@ export function BoredModule() {
         <div className="min-h-[340px] sm:min-h-[380px] flex items-center justify-center py-4">
           {currentActivity && (
             <article
-              className={`w-full max-w-xl min-h-[320px] p-6 sm:p-10 rounded-3xl glass-elevated border border-[var(--border-base)] flex flex-col justify-between transition-all duration-300 relative overflow-hidden shadow-2xl ${
-                isPopping ? "animate-card-pop" : ""
-              }`}
+              className="w-full max-w-xl min-h-[320px] p-6 sm:p-10 rounded-3xl glass-elevated border border-[var(--border-base)] flex flex-col justify-between relative overflow-hidden shadow-2xl"
             >
               {/* Card Header */}
               <div className="flex items-center justify-between gap-4">
@@ -235,9 +219,9 @@ export function BoredModule() {
         <div className="flex flex-col items-center gap-3 mt-6">
           <button
             onClick={() => selectRandomActivity()}
-            className="w-full sm:w-auto px-8 sm:px-12 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white font-black text-base sm:text-lg tracking-tight hover:opacity-95 active:scale-[0.98] transition-all shadow-[0_12px_40px_rgba(99,102,241,0.35)] flex items-center justify-center gap-3 cursor-pointer"
+            className="w-full sm:w-auto px-8 sm:px-12 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white font-black text-base sm:text-lg tracking-tight hover:opacity-95 active:scale-[0.98] transition-opacity shadow-[0_4px_20px_rgba(99,102,241,0.25)] flex items-center justify-center gap-3 cursor-pointer"
           >
-            <RefreshCw className={`w-5 h-5 ${isPopping ? "animate-spin" : ""}`} />
+            <RefreshCw className="w-5 h-5" />
             <span>{t("bored.generate")}</span>
           </button>
 

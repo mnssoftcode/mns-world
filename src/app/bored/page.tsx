@@ -1,11 +1,11 @@
-import { BoredModule } from "@/modules/bored/BoredModule";
+import { EnjoyModule } from "@/modules/enjoy/EnjoyModule";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "I'm Bored — MnsWorld",
+  title: "Enjoy & I'm Bored — MnsWorld",
   description: "Turn boredom into one concrete next action.",
 };
 
 export default function BoredPage() {
-  return <BoredModule />;
+  return <EnjoyModule />;
 }

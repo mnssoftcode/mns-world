@@ -12,11 +12,12 @@ export interface UserPreferences {
   wallpaperPreset?: string;
   wallpaperBlur?: number; // 0 to 30px
   wallpaperDim?: number; // 10 to 90%
-  // Game & Audio immersion
+  // Audio & Experience
   soundFxEnabled?: boolean;
   xp?: number;
   level?: number;
   completedQuests?: string[];
+  visibleModules?: string[];
 }
 
 export interface BoredActivity {
@@ -100,4 +101,61 @@ export interface WallpaperPreset {
   description: string;
   url: string;
   thumbnail: string;
+}
+
+// Version 2 — External Resources Hub Specification (Section 8)
+export interface ExternalResource {
+  id: string;
+  category: string;
+  name: string;
+  description: string;
+  url: string;
+  icon?: string;
+  featured?: boolean;
+  tags?: string[];
+}
+
+// Version 2 — Productivity Execution (Section 5)
+export interface ProductivityTask {
+  id: string;
+  title: string;
+  completed: boolean;
+  priority: "high" | "medium" | "low";
+  category?: "career" | "project" | "daily";
+  createdAt: string;
+}
+
+// Version 2 — Life Goals & Habits (Section 7)
+export interface GoalMilestone {
+  id: string;
+  title: string;
+  completed: boolean;
+}
+
+export interface LifeGoal {
+  id: string;
+  title: string;
+  description?: string;
+  timeframe: "long-term" | "yearly" | "current";
+  category: "career" | "wealth" | "health" | "personal" | "adventure";
+  progress: number; // 0 to 100
+  milestones: GoalMilestone[];
+  completed?: boolean;
+}
+
+export interface LifeHabit {
+  id: string;
+  title: string;
+  frequency: "daily" | "weekly";
+  streak: number;
+  lastCompletedDate?: string;
+  category?: string;
+}
+
+export interface CustomExternalLink {
+  id: string;
+  name: string;
+  url: string;
+  category: string;
+  description?: string;
 }

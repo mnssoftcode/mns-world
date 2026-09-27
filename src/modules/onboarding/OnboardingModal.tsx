@@ -23,8 +23,8 @@ export function OnboardingModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
-      <div className="w-full max-w-lg glass-elevated rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20 animate-card-pop">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+      <div className="w-full max-w-lg glass-elevated rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20">
         {/* Header Badge */}
         <div className="flex items-center gap-2 mb-4">
           <div className="p-2 rounded-xl bg-white/10 text-white">

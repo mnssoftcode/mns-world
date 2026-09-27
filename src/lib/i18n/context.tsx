@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useTransition } from "react";
 import { SupportedLocale, ThemeMode, UserPreferences } from "@/types";
-import { storageRepository, DEFAULT_PREFERENCES } from "@/lib/storage";
+import { storageRepository } from "@/lib/storage";
 import { gameAudio } from "@/lib/sound";
 import enMessages from "../../../messages/en.json";
 import hiMessages from "../../../messages/hi.json";
@@ -44,22 +44,22 @@ const dictionaries: Record<SupportedLocale, Messages> = {
 const MnsAppContext = createContext<MnsAppContextType | null>(null);
 
 export function MnsAppProvider({ children }: { children: React.ReactNode }) {
-  const [preferences, setPreferences] = useState<UserPreferences>(DEFAULT_PREFERENCES);
+  const [preferences, setPreferences] = useState<UserPreferences>(() => storageRepository.getPreferences());
   const [isLoaded, setIsLoaded] = useState(false);
   const [xpNotification, setXpNotification] = useState<XpNotification | null>(null);
   const [, startTransition] = useTransition();
 
   useEffect(() => {
-    const loadedPrefs = storageRepository.getPreferences();
-    setPreferences(loadedPrefs);
-    setIsLoaded(true);
-
     const handleStorageUpdate = () => {
       setPreferences(storageRepository.getPreferences());
     };
 
     window.addEventListener("mnsworld:preferences:updated", handleStorageUpdate);
     window.addEventListener("mnsworld:reset", handleStorageUpdate);
+
+    queueMicrotask(() => {
+      setIsLoaded(true);
+    });
 
     return () => {
       window.removeEventListener("mnsworld:preferences:updated", handleStorageUpdate);
